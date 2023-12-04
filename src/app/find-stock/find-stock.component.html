@@ -1,0 +1,85 @@
+
+
+<div class="container">
+  <!--
+  <h2> App Find Stock </h2>
+
+  <div>
+    <p>Stock :: {{ data.symbol }}</p>
+  </div>
+-->
+
+  <div class="mb-3 mt-3">
+
+    <input type="text" class="form-control" placeholder="symbol"[(ngModel)]="symbol"
+    (blur)="show_chart()" (keyup.enter)="show_chart()">
+  </div>
+
+
+  <!--Begin :  Year and Quarter Select -->
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Begin</th>
+        <th>End</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr>
+        <td>
+          <div class="form-group">
+            <select class="form-control" id="sel1" [(ngModel)]="selected_start_quarter"
+            (change)="onLabelChange()">
+            <option *ngFor="let item of quartersList" [ngValue]="item">{{ item }}</option>
+            </select>
+          </div>
+        </td>
+        <td>
+          <div class="form-group">
+            <select class="form-control" id="sel1" [(ngModel)]="selected_end_quarter"
+            (change)="onLabelChange()">
+                <option *ngFor="let item of quartersList">{{ item }}</option>
+            </select>
+          </div>
+        </td>
+
+  </table>
+
+
+
+
+
+  <!-- END : Year and Quarter Select -->
+<!--
+  <div >
+    <br>
+    <button type="submit" class="btn btn-primary" (click)="show_chart()">Find</button>
+    <button type="submit" class="btn btn-primary" (click)="gen_combo_chart()">Combo</button>
+  </div>
+-->
+
+
+<!-- ลอง Loop ข้อมูลออกมาดู-->
+<hr>
+<div>
+  <canvas id="barChart-1"></canvas>
+  <canvas id="combo-1"></canvas>
+</div>
+
+<!--
+<hr>
+
+<div *ngIf="data">
+  <ul>
+    <li *ngFor="let item of data.financial_statements | keyvalue">
+      {{ item.key + '' }}
+    {{ item.key + '' }}: {{ data.financial_statements[item.key + '']?.value }}
+    </li>
+  </ul>
+</div>
+-->
+
+
+
+
