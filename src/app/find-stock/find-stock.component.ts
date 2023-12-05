@@ -43,6 +43,7 @@ export class FindStockComponent   {
 
   chart: any
   combo_chart: any
+  np_chart: any
 
 
 
@@ -57,6 +58,13 @@ export class FindStockComponent   {
     const data = await this.httpClient.get(`http://192.168.1.13:8000/total_revenue/${this.symbol}`).toPromise();
     // console.log(data); //สำหรับเช็คการดึงข้อมูล
     this.data = data;
+  }
+
+  async test() {
+    const data = await this.httpClient.get(`http://192.168.1.13:8000/pl/${this.symbol}`).toPromise();
+    // console.log(data); //สำหรับเช็คการดึงข้อมูล
+    this.data = data;
+    console.log(this.data.pl)
   }
 
   async show_chart(){
