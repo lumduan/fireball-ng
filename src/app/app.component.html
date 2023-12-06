@@ -1,5 +1,21 @@
 <!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+<br>
+<div class="container">
+  <button type="button" class="btn btn-success header-button" (click)="toggle_chart1()">CHART 1</button>
+  <button type="button" class="btn btn-warning header-button" (click)="toggle_chart2()">CHART 2</button>
+</div>
 
-<app-find-stock></app-find-stock>
+<!--
+<button (click)="toggleShowElement()">Toggle Show/Hide</button>
+-->
+
+<div *ngIf="show_chart1">
+  <app-find-stock></app-find-stock>
+</div>
+
+<div *ngIf="show_chart2">
+  <app-income-statement></app-income-statement>
+</div>
+
 
 <router-outlet></router-outlet>

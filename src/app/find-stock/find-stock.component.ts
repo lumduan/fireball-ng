@@ -23,6 +23,7 @@ export class FindStockComponent   {
   httpClient = inject(HttpClient)
   data: any = [] // เก็บข้อมูลที่ดึงมาจาก fastapi
   symbol = 'CPALL'
+  public gogo:string = 'dfdffdf'
 
   quartersList: string[] = generateQuartersList(); // quartersList เก็บ array ที่จะแสดงผลใน form-control
 
@@ -39,20 +40,17 @@ export class FindStockComponent   {
 
   // เก็บค่า yq ที่ดึงมาจาก db ทั้งหมด '100,000,000.00'
   chart_labels: any = []
-  char_values: any = []
+  chart_values: any = []
 
   chart: any
   combo_chart: any
   np_chart: any
 
-
-
   labeldata: any[] = []
 
-
-
-
-
+  public test1():string{
+    return 'from find-stock test1'
+  }
 
   async total_revenue() {
     const data = await this.httpClient.get(`http://192.168.1.13:8000/total_revenue/${this.symbol}`).toPromise();
@@ -100,7 +98,7 @@ export class FindStockComponent   {
         labels: this.chart_labels,
         datasets: [{
           label: 'Total Revenue MB.',
-          data: this.char_values,
+          data: this.chart_values,
           backgroundColor: [
             'rgba(255, 99, 132, 0.7)',
             'rgba(54, 162, 235, 0.7)',
@@ -230,17 +228,15 @@ export class FindStockComponent   {
     this.chart_labels = this.yq_labels.filter((label: string) => label >= this.selected_start_quarter && label <= this.selected_end_quarter);
 
     // Use the filtered labels to create the filtered values array
-    this.char_values = this.chart_labels.map((key: string | number) => this.data.financial_statements[key]?.value);
+    // map.key
+    this.chart_values = this.chart_labels.map((key: string | number) => this.data.financial_statements[key]?.value);
 
     // เรียง Year Qtarter ในแสดงใน Label จากเก่ามาใหม่
     this.chart_labels.sort((a: string, b: any) => {
-
       // an customize the comparison logic based on your requirements
       // For example, if the keys are numeric, you can use a - b
     return a.localeCompare(b); // This sorts alphabetically, adjust as needed
   });
-
-
 
   }
 
