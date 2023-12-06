@@ -17,18 +17,35 @@ Chart.register(...registerables);
 
 export class IncomeStatementComponent {
 
-  data :any = []
+  data: any = [];
   symbol:string = 'CPALL'
   symbol_check: string =''
 
   constructor(private stock_service: stock) {}
 
-  async ngOnInit() {
-
-    // console.log(await this.stock_service.getEvents())
-    console.log(await this.stock_service.get_fs('SNP','pl'))
+  ngOnInit() {
+    this.getData()
+    // console.log(this.data)
 
   }
+
+
+
+  getData(){
+    this.stock_service.getFs('TU', 'pl')
+    .subscribe(
+      (data) => {
+        this.data = data
+        console.log('Data received:', this.data)
+      },
+      (error) => {
+        console.error('Error:', error)
+      }
+    )
+  }
+
+
+
 
 }
 
