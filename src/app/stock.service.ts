@@ -7,7 +7,7 @@ import { catchError } from 'rxjs/operators';
   providedIn: 'root',
 })
 
-export class stock {
+export class stockService {
 
   private api_url: string = 'http://192.168.1.13:8000/'
 

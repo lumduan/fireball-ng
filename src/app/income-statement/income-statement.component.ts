@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
-import { stock } from '../stock.service'
+import { stockService } from '../stock.service';
+import {stock} from '../stock';
 import { Chart, registerables } from 'chart.js/auto';
 
 Chart.register(...registerables);
@@ -10,18 +10,23 @@ Chart.register(...registerables);
 @Component({
   selector: 'app-income-statement',
   standalone: true,
-  imports: [CommonModule,FormsModule,HttpClientModule,],
+  imports: [CommonModule,FormsModule,],
   templateUrl: './income-statement.component.html',
-  styleUrl: './income-statement.component.css'
+  styleUrl: './income-statement.component.css',
 })
 
 export class IncomeStatementComponent {
 
-  data: any = [];
-  symbol:string = 'CPALL'
-  symbol_check: string =''
+  stock: stock = {
+    symbol: 'SABINA',
+    name: 'Home pro',
+    fs: [],
+  }
 
-  constructor(private stock_service: stock) {}
+  data: any = [];
+  symbol:string = 'HMPRO';
+
+  constructor(private stockService: stockService) {}
 
   ngOnInit() {
     this.getData()
@@ -32,11 +37,11 @@ export class IncomeStatementComponent {
 
 
   getData(){
-    this.stock_service.getFs('TU', 'pl')
+    this.stockService.getFs(this.stock.symbol, 'pl')
     .subscribe(
       (data) => {
-        this.data = data
-        console.log('Data received:', this.data)
+        this.stock.fs = data
+        console.log('Data received:', this.stock.fs)
       },
       (error) => {
         console.error('Error:', error)
