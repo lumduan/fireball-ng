@@ -1,0 +1,39 @@
+<div class="px-10 mt-10">
+  <div class="relative mt-8 flex items-center">
+    <!-- Pill-shaped input with Angular two-way data binding -->
+    <input
+      type="text"
+      [(ngModel)]="symbol"
+      (keydown.enter)="GetStockData()"
+      id="symbol"
+      name="symbol"
+      placeholder=" "
+      class="peer h-10 w-6/12 border-b-2 border-gray-500 bg-transparent text-gray-300 placeholder-transparent focus:outline-none focus:border-indigo-500 transition-all uppercase"
+    />
+
+    <!-- OK button with Angular click event binding -->
+    <button
+      type="button"
+      (click)="GetStockData()"
+      class="ml-2 h-10 px-4 bg-indigo-500 text-gray-200 rounded-full focus:outline-none hover:bg-indigo-600 transition-all"
+    >
+      OK
+    </button>
+
+    <!-- Overlapping label with pill shape -->
+    <label
+      for="symbol"
+      class="absolute left-0 -top-2.5 text-gray-300 text-sm transition-all peer-placeholder-shown:top-2.5 peer-focus:-top-2.5 peer-focus:text-indigo-500 cursor-text"
+    >
+      Stock Symbol
+    </label>
+  </div>
+</div>
+
+
+<div class="px-10 mt-10">
+
+<app-income-statement></app-income-statement>
+
+</div>
+

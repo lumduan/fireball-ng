@@ -1,47 +1,82 @@
-<div class="container">
+<div class="px-10 text-gray-300">
 
-  <div class="mb-3 mt-3">
-    <input type="text" class="form-control" placeholder="symbol" [(ngModel)]="symbol">
+  <div class = "mb-5">
+
+    <div class="flex items-center flex-wrap sm:flex-nowrap">
+      <div class="mr-2 bg-slate-300 p-1 rounded"><img class="complogo" src="assets/stocklogo/{{stock.symbol}}.png"></div>
+      <div><h3 class="text-xl ml-3"><b>{{stock.name.en}}</b></h3></div>
+    </div>
+
   </div>
 
-  <br>
-  <!--
-  <div class="row">
-    <div class="col-sm-12 center">
-      <img class="complogo" src="assets/stocklogo/{{data.symbol}}.png"> <h3>Income Statement  |  {{symbol}}</h3>
-    </div>
-  </div>
-  -->
-  <div class="row">
-    <div class="col-sm-12 center">
-      <h3> Income Statement  <img class="complogo" src="assets/stocklogo/{{stock.symbol}}.png"> </h3>
-    </div>
+  <div class="col-auto mb-5">
+    <h3 class="text-2xl text-center"> Income Statement : {{stock.period}}</h3>
   </div>
 
+  <!-- Row 1 -->
+  <div class="grid grid-cols-6 gap-2">
 
-  <div class="row">
-    <div class="col-sm-2">
-      <h5>Revenue</h5>
-      <h4>143,350</h4>
-      <h6>QoQ : 143,350</h6>
-      <h6>+17,123 : +13.65%</h6>
+    <!-- Total Revenue -->
+    <div class="col-auto ">
+      <h3 class="text-xl">Revenue Total</h3>
+      <h4 class = "text-2xl text-green-600">
+        {{ stock.totalRevenue  | number:'1.2-2' }} MB.
+      </h4>
+      <p class = "mb-0 text-xs">Last Year :
+        {{ stock.totalRevenueLastYear | number:'1.2-2' }} MB.
+      </p>
+      <p class = "mb-0 text-xs" >
+        <span [class]="stock.totalRevenusYoY < 0 ? 'text-red-500' : ''">
+          {{ stock.totalRevenusYoY  | number:'1.2-2' }}  MB.
+        </span> :
+        <span [class]= "stock.totalRevenusYoYPercent < 0 ? 'text-red-500' : ''">
+          {{ stock.totalRevenusYoYPercent | number:'1.2-2' }} %
+        </span>
+      </p>
     </div>
 
-    <div class="col-sm-2">
-      <h5>Gross Profit</h5>
-      <h4>143,350</h4>
-      <h6>QoQ : 143,350</h6>
-      <h6>+17,123 : +13.65%</h6>
+    <!-- Total Revenue -->
+    <div class="col-auto ">
+      <h3 class="text-xl">Gross Profit</h3>
+      <h4 class = "text-2xl text-green-600">
+        <span [class]="stock.gp < 0 ? 'text-red-500' : ''">
+          {{ stock.gp  | number:'1.2-2' }} MB.
+        </span>
+      </h4>
+      <p class = "mb-0 text-xs">Last Year :
+        {{ stock.gpLastYear  | number:'1.2-2' }} MB.
+      </p>
+      <p class = "mb-0 text-xs" >
+        <span [class]="stock.gpYoY < 0 ? 'text-red-500' : ''">
+          {{ stock.gpYoY   | number:'1.2-2' }} MB.
+        </span> :
+        <span [class]= "stock.gpYoYPercent < 0 ? 'text-red-500' : ''">
+          {{ stock.gpYoYPercent | number:'1.2-2' }} %
+        </span>
+      </p>
     </div>
 
-    <div class="col-sm-2">
-      <h5>Net Profit</h5>
-      <h4>143,350</h4>
-      <h6>QoQ : 143,350</h6>
-      <h6>+17,123 : +13.65%</h6>
+    <!-- Net Profit -->
+    <div class="col-auto ">
+      <h3 class="text-xl">Net Profit</h3>
+      <h4 class = "text-2xl text-green-600">
+        <span [class]="stock.np < 0 ? 'text-red-500' : ''">
+          {{ stock.np  | number:'1.2-2' }} MB.
+        </span>
+      </h4>
+      <p class = "mb-0 text-xs">Last Year :
+        {{ stock.npLastYear | number:'1.2-2' }} MB.
+      </p>
+      <p class = "mb-0 text-xs" >
+        <span [class]="stock.npYoY < 0 ? 'text-red-500' : ''">
+          {{ stock.npYoY  | number:'1.2-2' }}  MB.
+        </span> :
+        <span [class]= "stock.npYoYPercent < 0 ? 'text-red-500' : ''">
+          {{ stock.npYoYPercent | number:'1.2-2' }} %
+        </span>
+      </p>
     </div>
 
-    <div class="col-sm-4">.col-sm-4</div>
 
 
   </div>
