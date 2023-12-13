@@ -3,8 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { StockService } from '../stock.service';
 import { stock } from '../stock';
-import { Chart, registerables } from 'chart.js/auto';
+import { Chart, controllers, registerables } from 'chart.js/auto';
 import { Subject, takeUntil } from 'rxjs';
+import DataFrame from 'dataframe-js';
 
 Chart.register(...registerables);
 
@@ -46,6 +47,19 @@ export class IncomeStatementComponent implements OnInit {
 
 
   ngOnInit() {
+
+    console.log('Test DF :: ')
+    //test df
+    // Create a DataFrame
+
+    // Assuming you have a DataFrame named 'df'
+    const df = new DataFrame({
+      column1: [1, 2, 3],
+      column2: ['A', 'B', 'C'],
+    });
+
+    df.show(3);
+
 
     this.stockService.symbol$
       .pipe(takeUntil(this.ngUnsubscribe))
@@ -184,6 +198,7 @@ export class IncomeStatementComponent implements OnInit {
       )
   }
 
+/// test df-ts
 
 
 
