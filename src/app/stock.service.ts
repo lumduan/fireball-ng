@@ -87,6 +87,24 @@ export class StockService {
     return result.reverse();
   }
 
+  // FN : รวมข้อมูล YQ และ Data เข้าไว้ด้วยกัน เอาไว้ใช้ แสดงผลใน กราฟ ที่มี dataset
+  CombineYQData(fsValue: Record<string, number[]>, yearsQuarters: Record<string, string[]>): Record<string, any>[] {
+    const quarters = Object.keys(fsValue);
+
+    const data: Record<string, any>[] = quarters.map((quarter) => {
+      const capitalizedQuarter = quarter.toUpperCase(); // Capitalize the quarter
+      const item: Record<string, any> = { x: capitalizedQuarter };
+      yearsQuarters[quarter].forEach((yearQuarter, index) => {
+        const year = Number(yearQuarter.split(" ")[0]); // Extract the year from the string
+        item[year] = fsValue[quarter][index];
+      });
+      return item;
+    });
+
+    return data;
+  }
+
+
 
 
 }

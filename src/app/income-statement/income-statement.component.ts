@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, OnInit,OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { StockService } from '../stock.service';
@@ -20,8 +20,21 @@ export class IncomeStatementComponent implements OnInit {
 
   private ngUnsubscribe = new Subject();
 
+
+
   stock: any = {};
-  data: any = [];
+
+  quarters = ['Q1', 'Q2', 'Q3', 'Q4'];
+  yoy: any = {
+    yearsQuarters: {},
+    totalRevenue : {},
+  }
+
+  numberPastofYear: number = 5;
+
+  // data: any = [];
+
+
   chartTotalRevenue: any;
 
   stockService: StockService;
@@ -40,7 +53,19 @@ export class IncomeStatementComponent implements OnInit {
         console.log('Symbol :', symbol);
         this.GetData(symbol)
       });
+  }
 
+  ngOnDestroy(): void {
+    this.destroyTotalRevenueChart();
+    this.ngUnsubscribe.next(undefined);  // Pass undefined or any value here.
+    this.ngUnsubscribe.complete();
+  }
+
+  private destroyTotalRevenueChart(): void {
+    if (this.chartTotalRevenue) {
+      this.chartTotalRevenue.destroy();
+      this.chartTotalRevenue = null;
+    }
   }
 
 
@@ -71,43 +96,85 @@ export class IncomeStatementComponent implements OnInit {
           this.stock.npYoY = this.stock.np - this.stock.npLastYear
           this.stock.npYoYPercent = (this.stock.npYoY / Math.abs(this.stock.npLastYear)) * 100
 
+          //สร้าง YoY Array
+          //เก็บค่าtotalRevenueYoY q1 - q4 ในปีที่เลือกหุ้น
+
+          this.yoy.totalRevenue = {}
+          this.yoy.yearsQuarters = {}
+
+          const currentYear = this.stock.period.split(' ')[0];
+
+          for (const quarter of this.quarters) {
+            const yearQuarter = this.stockService.GenYoYArray(`${currentYear} ${quarter}`, this.numberPastofYear);
+
+
+            // Initialize arrays if they don't exist
+            if (!this.yoy.yearsQuarters[quarter.toLowerCase()]) {
+              this.yoy.yearsQuarters[quarter.toLowerCase()] = [];
+            }
+
+            if (!this.yoy.totalRevenue[quarter.toLowerCase()]) {
+              this.yoy.totalRevenue[quarter.toLowerCase()] = [];
+            }
+
+            this.yoy.yearsQuarters[quarter.toLowerCase()] = yearQuarter;
+
+            for (const yq of yearQuarter) {
+              this.yoy.totalRevenue[quarter.toLowerCase()].push(this.stock.pl['Total Revenue'][`${yq}`].value || 0);
+            }
+          }
+
+          // console.log('YOY YQ : ',this.yoy) //แสดง array ของ yoy q ที่ต้องการ
+          // console.log('YOY TotalRevenue : ',this.yoy.totalRevenue)
+
+          const chartTotalRevenueData = this.stockService.CombineYQData(this.yoy.totalRevenue,this.yoy.yearsQuarters);
+          console.log('Data Combile : ',chartTotalRevenueData)
+
+
           // Chart Area
-          // this.chartTotalRevenue = new Chart('chartTotalRevenue',{
-          //   type: 'bar',
-          //   data: {
-          //     labels: this.chart_labels,
-          //     datasets: [{
-          //       label: 'Total Revenue MB.',
-          //       data: this.chart_values,
-          //       backgroundColor: [
-          //         'rgba(255, 99, 132, 0.7)',
-          //         'rgba(54, 162, 235, 0.7)',
-          //         'rgba(255, 206, 86, 0.7)',
-          //         'rgba(75, 192, 192, 0.7)',
-          //       ],
-          //       borderColor: [
-          //         'rgba(255, 99, 132, 1)',
-          //         'rgba(54, 162, 235, 1)',
-          //         'rgba(255, 206, 86, 1)',
-          //         'rgba(75, 192, 192, 1)',
-          //       ],
-          //       borderWidth: 1
-          //     }]
-          //   },
-          //   options: {
-          //     scales: {
-          //       y: {
-          //         beginAtZero: true
-          //       }
-          //     }
-          //   }
-          // })
 
+            // The datasets array is dynamically generated based on the years present in the this.yoy.yearsQuarters["q1"] array.
+            // The map function is used to create a dataset for each year.
+            // The chartData object is constructed with the dynamic dataset
+          const datasets = this.yoy.yearsQuarters["q1"].map((yearQuarter: string) => {
+            const year = Number(yearQuarter.split(" ")[0]);
 
+            return {
+              label: year.toString(),
+              data: chartTotalRevenueData.map((item: any) => item[year]),
+              parsing: {
+                yAxisKey: year.toString()
+              }
+            };
+          });
 
+          // Chart totalRevenue
+          this.destroyTotalRevenueChart();
+          this.chartTotalRevenue = new Chart('chartTotalRevenue', {
+            type: 'bar',
+            data: {
+              labels: this.quarters,
+              datasets: datasets,
+            },
+
+            options: {
+              responsive: false,
+              // maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  position: 'right',
+                  display: true,
+                },
+                title: {
+                  display: false,
+                  text: 'Total Revenue',
+                },
+              },
+            },
+          });
 
           console.log('Data received:', this.stock)
-          // console.log('Gen YOY:', this.stockService.GenYoYArray('2023 Q3',3))
+          //
 
         },
 
@@ -123,16 +190,3 @@ export class IncomeStatementComponent implements OnInit {
 }
 
 
-// Function :: สร้าง Array สำหรับ Year และ Quarter เริ่มจาก '2003 Q1'
-function generateQuartersList(): string[] {
-  const currentYear = new Date().getFullYear();
-  const quartersList: string[] = [];
-
-  for (let year = 2003; year <= currentYear; year++) {
-    for (let quarter = 1; quarter <= 4; quarter++) {
-      quartersList.push(`${year} Q${quarter}`);
-    }
-  }
-
-  return quartersList;
-}
