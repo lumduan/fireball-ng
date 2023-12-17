@@ -2,12 +2,18 @@ import { Component, OnInit,OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { StockService } from '../stock.service';
-import { stock } from '../stock';
 import { Chart, controllers, registerables } from 'chart.js/auto';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Subject, takeUntil } from 'rxjs';
 import DataFrame from 'dataframe-js';
 
+
 Chart.register(...registerables);
+// Chart.register(ChartDataLabels);
+Chart.defaults.set('plugins.datalabels', {
+  color: '#FE777B'
+});
+
 
 @Component({
   selector: 'app-income-statement',
@@ -29,16 +35,19 @@ export class IncomeStatementComponent implements OnInit {
   yoy: any = {
     yearsQuarters: {},
     totalRevenue : {},
+    grossProfit : {},
+    netProfit : {}
   }
 
   numberPastofYear: number = 5;
 
-  // data: any = [];
-
-
+  // Chart
   chartTotalRevenue: any;
+  chartGrossProfit: any;
+  chartNetProfit: any;
 
   stockService: StockService;
+  dataFrame: any;
 
   constructor(stockService: StockService) {
     this.stockService = stockService;
@@ -47,18 +56,6 @@ export class IncomeStatementComponent implements OnInit {
 
 
   ngOnInit() {
-
-    console.log('Test DF :: ')
-    //test df
-    // Create a DataFrame
-
-    // Assuming you have a DataFrame named 'df'
-    const df = new DataFrame({
-      column1: [1, 2, 3],
-      column2: ['A', 'B', 'C'],
-    });
-
-    df.show(3);
 
 
     this.stockService.symbol$
@@ -70,16 +67,27 @@ export class IncomeStatementComponent implements OnInit {
   }
 
   ngOnDestroy(): void {
-    this.destroyTotalRevenueChart();
+    this.destroyChart();
     this.ngUnsubscribe.next(undefined);  // Pass undefined or any value here.
     this.ngUnsubscribe.complete();
   }
 
-  private destroyTotalRevenueChart(): void {
+  private destroyChart(): void {
     if (this.chartTotalRevenue) {
       this.chartTotalRevenue.destroy();
       this.chartTotalRevenue = null;
     }
+
+    if (this.chartGrossProfit) {
+      this.chartGrossProfit.destroy();
+      this.chartGrossProfit = null;
+    }
+
+    if (this.chartNetProfit) {
+      this.chartNetProfit.destroy();
+      this.chartNetProfit = null;
+    }
+
   }
 
 
@@ -114,6 +122,8 @@ export class IncomeStatementComponent implements OnInit {
           //เก็บค่าtotalRevenueYoY q1 - q4 ในปีที่เลือกหุ้น
 
           this.yoy.totalRevenue = {}
+          this.yoy.grossProfit = {}
+          this.yoy.netProfit = {}
           this.yoy.yearsQuarters = {}
 
           const currentYear = this.stock.period.split(' ')[0];
@@ -130,45 +140,60 @@ export class IncomeStatementComponent implements OnInit {
             if (!this.yoy.totalRevenue[quarter.toLowerCase()]) {
               this.yoy.totalRevenue[quarter.toLowerCase()] = [];
             }
+            if (!this.yoy.grossProfit[quarter.toLowerCase()]) {
+              this.yoy.grossProfit[quarter.toLowerCase()] = [];
+            }
+            if (!this.yoy.netProfit[quarter.toLowerCase()]) {
+              this.yoy.netProfit[quarter.toLowerCase()] = [];
+            }
 
             this.yoy.yearsQuarters[quarter.toLowerCase()] = yearQuarter;
 
             for (const yq of yearQuarter) {
               this.yoy.totalRevenue[quarter.toLowerCase()].push(this.stock.pl['Total Revenue'][`${yq}`].value || 0);
+              this.yoy.grossProfit[quarter.toLowerCase()].push(this.stock.pl['Revenue From Operations'][`${yq}`].value - this.stock.pl['Costs'][`${yq}`].value || 0);
+              this.yoy.netProfit[quarter.toLowerCase()].push(this.stock.pl['Net Profit (Loss) For The Period'][`${yq}`].value || 0);
             }
           }
 
           // console.log('YOY YQ : ',this.yoy) //แสดง array ของ yoy q ที่ต้องการ
-          // console.log('YOY TotalRevenue : ',this.yoy.totalRevenue)
+          // console.log('YOY Data : ',this.yoy)
 
+          // PrepareData to Chart
           const chartTotalRevenueData = this.stockService.CombineYQData(this.yoy.totalRevenue,this.yoy.yearsQuarters);
-          console.log('Data Combile : ',chartTotalRevenueData)
+          const chartGrossProfitData = this.stockService.CombineYQData(this.yoy.grossProfit,this.yoy.yearsQuarters);
+          const chartNetProfitData = this.stockService.CombineYQData(this.yoy.netProfit,this.yoy.yearsQuarters);
+          // console.log('Data Combile : ',chartTotalRevenueData)
 
 
           // Chart Area
+          this.destroyChart();
 
+          // Chart totalRevenue
             // The datasets array is dynamically generated based on the years present in the this.yoy.yearsQuarters["q1"] array.
             // The map function is used to create a dataset for each year.
             // The chartData object is constructed with the dynamic dataset
-          const datasets = this.yoy.yearsQuarters["q1"].map((yearQuarter: string) => {
+          const chartTotalRevenueDatasets = this.yoy.yearsQuarters["q1"].map((yearQuarter: string) => {
             const year = Number(yearQuarter.split(" ")[0]);
 
             return {
               label: year.toString(),
               data: chartTotalRevenueData.map((item: any) => item[year]),
+              datalabels: {
+                color: '#FFCE56'
+              },
               parsing: {
                 yAxisKey: year.toString()
               }
             };
           });
 
-          // Chart totalRevenue
-          this.destroyTotalRevenueChart();
+
           this.chartTotalRevenue = new Chart('chartTotalRevenue', {
             type: 'bar',
             data: {
               labels: this.quarters,
-              datasets: datasets,
+              datasets: chartTotalRevenueDatasets,
             },
 
             options: {
@@ -183,9 +208,94 @@ export class IncomeStatementComponent implements OnInit {
                   display: false,
                   text: 'Total Revenue',
                 },
+
+                datalabels: {
+                  color: '#36A2EB',
+                  rotation: -90,
+                  formatter: function(value, context) {
+                    return Math.round(value) + ' MB';
+                  },
+                },
+
               },
             },
+          }); // End Chart totalRevenue
+
+          // Chart GrossProfit
+
+          const chartGrossProfitDatasets = this.yoy.yearsQuarters["q1"].map((yearQuarter: string) => {
+            const year = Number(yearQuarter.split(" ")[0]);
+
+            return {
+              label: year.toString(),
+              data: chartGrossProfitData.map((item: any) => item[year]),
+              parsing: {
+                yAxisKey: year.toString()
+              }
+            };
           });
+
+
+          this.chartGrossProfit = new Chart('chartGrossProfit', {
+            type: 'bar',
+            data: {
+              labels: this.quarters,
+              datasets: chartGrossProfitDatasets,
+            },
+
+            options: {
+              responsive: false,
+              // maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  position: 'right',
+                  display: true,
+                },
+                title: {
+                  display: false,
+                  text: 'GP',
+                },
+              },
+            },
+          }); // End Chart GrossProfit
+
+          // Chart NetProfit
+          const chartNetProfitDatasets = this.yoy.yearsQuarters["q1"].map((yearQuarter: string) => {
+            const year = Number(yearQuarter.split(" ")[0]);
+
+            return {
+              label: year.toString(),
+              data: chartNetProfitData.map((item: any) => item[year]),
+              parsing: {
+                yAxisKey: year.toString()
+              }
+            };
+          });
+
+
+          this.chartNetProfit = new Chart('chartNetProfit', {
+            type: 'bar',
+            data: {
+              labels: this.quarters,
+              datasets: chartNetProfitDatasets,
+            },
+
+            options: {
+              responsive: false,
+              // maintainAspectRatio: false,
+              plugins: {
+                legend: {
+                  position: 'right',
+                  display: true,
+                },
+                title: {
+                  display: false,
+                  text: 'NP',
+                },
+
+              },
+            },
+          }); // End Chart NetProfit
 
           console.log('Data received:', this.stock)
           //

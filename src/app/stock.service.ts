@@ -9,8 +9,8 @@ import { catchError } from 'rxjs/operators';
 
 export class StockService {
 
-  private api_url: string = 'http://192.168.1.13:8000/'
-  private defaultSymbol:string = 'TU'
+  private api_url: string = '/api'
+  private defaultSymbol:string = 'CPALL'
 
   private _symbolSubject = new BehaviorSubject<string>(this.defaultSymbol);
   symbol$ = this._symbolSubject.asObservable();
@@ -24,13 +24,15 @@ export class StockService {
 
   // get financial statement from fast api
   GetFs(symbol: string, fs: string): Observable<any> {
-    return this.http.get(`${this.api_url}${fs}/${symbol}`).pipe(
+    const url = `${this.api_url}/${fs}/${symbol}`; // Ensure correct path construction
+    return this.http.get(url).pipe(
       catchError((error: any) => {
         console.error('Error fetching data:', error);
         return throwError(error); // Re-throw the error so the caller can handle it
       })
     );
   }
+
 
 
   ConvertPeriodToYQ(input: string): string {

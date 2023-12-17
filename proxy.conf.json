@@ -1,0 +1,6 @@
+{
+  "/api": {
+    "target": "http://fireball-fastapi:8000/",
+    "secure": false
+  }
+}
