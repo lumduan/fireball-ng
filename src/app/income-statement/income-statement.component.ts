@@ -7,7 +7,7 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Subject, takeUntil } from 'rxjs';
 import DataFrame from 'dataframe-js';
 import {TabulatorFull as Tabulator} from 'tabulator-tables';
-import { createTableQoQ } from './income-statement-table';
+import { createTableQoQ, createTableMain } from './income-statement-table';
 
 
 Chart.register(...registerables);
@@ -50,7 +50,8 @@ export class IncomeStatementComponent implements OnInit {
 
   stockService: StockService;
   dataFrame: any;
-  table: Tabulator | undefined;
+  tableQoQ: Tabulator | undefined;
+  tableMain: Tabulator | undefined;
   PlTable: any;
   plTemplate: any = [];
 
@@ -324,7 +325,8 @@ export class IncomeStatementComponent implements OnInit {
 
 
     // test table
-    const tableName = "#tableQoQ";
+    const tableName1 = "tableQoQ";
+    const tableName2 = 'tableMain';
     const tableData = [
       { id: 1, item: this.stock.symbol,},
     ];
@@ -336,9 +338,11 @@ export class IncomeStatementComponent implements OnInit {
       }
     });
 
-    console.log("Test TableData : ", tableData)
+    // console.log("Test TableData : ", tableData)
 
-    const table = createTableQoQ(tableName, tableData); // Create the table with the specified name and data
+    const tableQoQ = createTableQoQ(tableName1, tableData); // Create the table with the specified name and data
+    console.log('Test tableQoQ : ', tableQoQ)
+    const tableMain = createTableMain(tableName2, tableData); // Create the table with the specified name and data
 
     //
 
