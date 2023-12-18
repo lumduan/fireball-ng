@@ -1,17 +1,16 @@
 import {TabulatorFull as Tabulator} from 'tabulator-tables';
 
 
-const createTable = (tableName: string, data: any[]): Tabulator => {
+const createTableQoQ = (tableName: string, data: any[]): Tabulator => {
   const table = new Tabulator(tableName, {
-    height: 205,
+    height:"40%",
     data: data, // Use the provided data
-    layout: "fitColumns",
+    layout:"fitData",
     movableColumns:false,
     columns: [
-      { title: "รายการ", field: "name", width: 150, headerSort:false,},
-      { title: "Age", field: "age", hozAlign: "left", formatter: "progress", headerSort:false,},
-      { title: "Favourite Colordmsndmsnmsd", field: "col", headerSort:false, },
-      { title: "Date Of Birthkjkjkksl", field: "dob", sorter: "date", hozAlign: "center", headerSort:false, },
+      // { title: "ลำดับ", field: "id"},
+      // { title: "id", field: "id", width: 10, headerSort:false,},
+      { title: "Items", field: "item", width: 500, hozAlign: "left", formatter: "plaintext", headerSort:false,},
     ],
   });
 
@@ -20,4 +19,4 @@ const createTable = (tableName: string, data: any[]): Tabulator => {
 
 
 
-export { createTable };
+export { createTableQoQ };

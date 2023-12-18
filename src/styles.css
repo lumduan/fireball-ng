@@ -36,7 +36,13 @@ html, body {
 }
 
 .tabulator-row{
-  color:#999
+  color:#999;
+}
+
+.tabulator-row .tabulator-cell {
+  padding: 0.5em 0.75em;
+  border: 0px solid #dbdbdb;
+  border-width: 0 0 0px;
 }
 
 

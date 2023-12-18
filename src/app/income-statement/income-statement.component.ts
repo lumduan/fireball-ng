@@ -7,7 +7,7 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Subject, takeUntil } from 'rxjs';
 import DataFrame from 'dataframe-js';
 import {TabulatorFull as Tabulator} from 'tabulator-tables';
-import { createTable } from './income-statement-table';
+import { createTableQoQ } from './income-statement-table';
 
 
 Chart.register(...registerables);
@@ -52,6 +52,7 @@ export class IncomeStatementComponent implements OnInit {
   dataFrame: any;
   table: Tabulator | undefined;
   PlTable: any;
+  plTemplate: any = [];
 
   constructor(stockService: StockService) {
     this.stockService = stockService;
@@ -300,7 +301,10 @@ export class IncomeStatementComponent implements OnInit {
             },
           }); // End Chart NetProfit
 
+          // Console to result area
           console.log('Data received:', this.stock)
+          this.plTemplate = this.stock.fs_templates.pl.income
+          // console.log('FS Templates : ',this.plTemplate)
           //
 
         },
@@ -317,17 +321,24 @@ export class IncomeStatementComponent implements OnInit {
 
   GenTableQoQ(): void {
 
+
+
     // test table
     const tableName = "#tableQoQ";
     const tableData = [
-      { id: 1, name: "รายได้จากการ", age: "12", col: "red", dob: "" },
-      { id: 2, name: "Mary May", age: "1", col: "blue", dob: "14/05/1982" },
-      { id: 3, name: "Christine Lobowski", age: "42", col: "green", dob: "22/05/1982" },
-      { id: 4, name: "Brendon Philips", age: "125", col: "orange", dob: "01/08/1980" },
-      { id: 5, name: "Margret Marmajuke", age: "16", col: "yellow", dob: "31/01/1999" },
+      { id: 1, item: this.stock.symbol,},
     ];
 
-    const table = createTable(tableName, tableData); // Create the table with the specified name and data
+    Object.entries(this.plTemplate).forEach(([key, value]: [string, unknown]) => {
+      if (typeof key === 'string' && typeof value === 'string' && value.endsWith('#ITEM')) {
+        // Add a new row to tableData for each ITEM in plTemplate
+        tableData.push({ id: parseInt(key), item: value });
+      }
+    });
+
+    console.log("Test TableData : ", tableData)
+
+    const table = createTableQoQ(tableName, tableData); // Create the table with the specified name and data
 
     //
 
