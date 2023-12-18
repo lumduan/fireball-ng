@@ -6,6 +6,8 @@ import { Chart, controllers, registerables } from 'chart.js/auto';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Subject, takeUntil } from 'rxjs';
 import DataFrame from 'dataframe-js';
+import {TabulatorFull as Tabulator} from 'tabulator-tables';
+import { createTable } from './income-statement-table';
 
 
 Chart.register(...registerables);
@@ -48,6 +50,8 @@ export class IncomeStatementComponent implements OnInit {
 
   stockService: StockService;
   dataFrame: any;
+  table: Tabulator | undefined;
+  PlTable: any;
 
   constructor(stockService: StockService) {
     this.stockService = stockService;
@@ -56,7 +60,6 @@ export class IncomeStatementComponent implements OnInit {
 
 
   ngOnInit() {
-
 
     this.stockService.symbol$
       .pipe(takeUntil(this.ngUnsubscribe))
@@ -306,10 +309,29 @@ export class IncomeStatementComponent implements OnInit {
           console.error('Error:', error);
         }
       )
+
+      // Teble Area
+      this.GenTableQoQ();
   }
 
-/// test df-ts
 
+  GenTableQoQ(): void {
+
+    // test table
+    const tableName = "#tableQoQ";
+    const tableData = [
+      { id: 1, name: "รายได้จากการ", age: "12", col: "red", dob: "" },
+      { id: 2, name: "Mary May", age: "1", col: "blue", dob: "14/05/1982" },
+      { id: 3, name: "Christine Lobowski", age: "42", col: "green", dob: "22/05/1982" },
+      { id: 4, name: "Brendon Philips", age: "125", col: "orange", dob: "01/08/1980" },
+      { id: 5, name: "Margret Marmajuke", age: "16", col: "yellow", dob: "31/01/1999" },
+    ];
+
+    const table = createTable(tableName, tableData); // Create the table with the specified name and data
+
+    //
+
+  }
 
 
 }

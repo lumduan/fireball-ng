@@ -4,8 +4,39 @@
 @import "../node_modules/tailwindcss/base";
 @import "../node_modules/tailwindcss/components";
 @import "../node_modules/tailwindcss/utilities";
+/* @import "../node_modules/tabulator-tables/dist/css/tabulator_midnight"; */
+/* @import "../node_modules/tabulator-tables/dist/css/tabulator_materialize.min"; */
+@import "../node_modules/tabulator-tables/dist/css/tabulator_bulma";
+/* @import "../node_modules/tabulator-tables/src/scss/themes/tabulator_simple.scss"; */
+
+
 
 html, body {
   font-family: 'Kanit', sans-serif;
   color: #2C3E50  ;
 }
+
+
+.tabulator{
+  border: 0px solid #999;
+  background-color: transparent !important;
+  font-size: 14px;
+}
+
+.tabulator .tabulator-header {
+  position: relative;
+  box-sizing: border-box;
+  width: 100%;
+  border-bottom: 0px solid #3FB449;
+  background-color: transparent !important;
+  color: #999;
+  font-weight: bold;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.tabulator-row{
+  color:#999
+}
+
+

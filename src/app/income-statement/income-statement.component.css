@@ -1,3 +1,5 @@
+/* @import "../../../node_modules/tabulator-tables/dist/css/tabulator_site"; */
+
 .center {
   text-align: center;
   align-items: flex-end;
@@ -14,3 +16,9 @@
   /* margin-bottom: 20px; */
   margin: 0px 0px 0px 0px;
 }
+
+
+
+
+
+
