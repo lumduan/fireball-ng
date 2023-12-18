@@ -325,8 +325,8 @@ export class IncomeStatementComponent implements OnInit {
 
 
     // test table
-    const tableName1 = "tableQoQ";
-    const tableName2 = 'tableMain';
+    const tableName1 = "#tableQoQ";
+    const tableName2 = '#tableMain';
     const tableData = [
       { id: 1, item: this.stock.symbol,},
     ];
