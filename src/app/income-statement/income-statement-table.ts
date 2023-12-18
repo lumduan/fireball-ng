@@ -55,17 +55,13 @@ const createTableQoQ = (tableName: string, data: any[]): Tabulator => {
 const createTableMain = (tableName: string, data: any[]): Tabulator => {
   const table = new Tabulator(tableName, {
     height:"100%",
-    data: plData, // Use the provided data
+    data: data, // Use the provided data
     layout:"fitData",
     movableColumns:false,
     columns: [
       // { title: "ลำดับ", field: "id"},
-      // { title: "id", field: "id", width: 10, headerSort:false,},
+      { title: "id", field: "id", width: 10, headerSort:false,},
       { title: "Items", field: "item", width: 190, hozAlign: "left", formatter: "plaintext", headerSort:false,},
-      { title: "2023 Q3", field: "periodA", width: 120, hozAlign: "right", formatter: "plaintext", headerSort:false,},
-      { title: "2022 Q3", field: "periodB", width: 120, hozAlign: "right", formatter: "plaintext", headerSort:false,},
-      { title: "2021 Q3", field: "periodB", width: 120, hozAlign: "right", formatter: "plaintext", headerSort:false,},
-      { title: "2021 Q4", field: "periodB", width: 120, hozAlign: "right", formatter: "plaintext", headerSort:false,},
     ],
 
     // สร้างเงื่อนไข ถ้าข้อมูลตรงกับที่ต้องการ ปรับ style ในแถวนั้น
