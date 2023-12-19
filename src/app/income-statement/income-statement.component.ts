@@ -8,6 +8,7 @@ import { Subject, takeUntil } from 'rxjs';
 import DataFrame from 'dataframe-js';
 import {TabulatorFull as Tabulator} from 'tabulator-tables';
 import { createTableQoQ, createTableMain } from './income-statement-table';
+import { ThisReceiver } from '@angular/compiler';
 
 
 Chart.register(...registerables);
@@ -323,12 +324,14 @@ export class IncomeStatementComponent implements OnInit {
   GenTableQoQ(): void {
 
 
+    // test area
 
-    // test table
+
+    //test table
     const tableName1 = "#tableQoQ";
     const tableName2 = '#tableMain';
     const tableData = [
-      { id: 1, item: this.stock.symbol,},
+      { id: 0, item: this.stock.symbol,},
     ];
 
     Object.entries(this.plTemplate).forEach(([key, value]: [string, unknown]) => {
@@ -341,8 +344,8 @@ export class IncomeStatementComponent implements OnInit {
     // console.log("Test TableData : ", tableData)
 
     const tableQoQ = createTableQoQ(tableName1, tableData); // Create the table with the specified name and data
-    console.log('Test tableQoQ : ', tableQoQ)
-    const tableMain = createTableMain(tableName2, tableData); // Create the table with the specified name and data
+    // console.log('Test tableQoQ : ', tableQoQ)
+    const tableMain = createTableMain(tableName2, this.stock); // Create the table with the specified name and data
 
     //
 

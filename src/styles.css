@@ -29,19 +29,19 @@ html, body {
   width: 100%;
   border-bottom: 2px solid #999;
   background-color: transparent !important;
-  color: #999;
+  color: #ccc;
   font-weight: bold;
   white-space: nowrap;
   overflow: hidden;
 }
 
 .tabulator-row{
-  color:#999;
+  color:#ccc;
 }
 
 .tabulator-row .tabulator-cell {
   padding: 0.5em 0.75em;
-  border: 0px solid #dbdbdb;
+  border: 0px solid #ccc;
   border-width: 0 0 0px;
 }
 
