@@ -132,6 +132,7 @@ export class IncomeStatementComponent implements OnInit {
           this.yoy.netProfit = {}
           this.yoy.yearsQuarters = {}
 
+          // แยก String โดยแยก Year ออกจาก Q ซึ่ง Year จะอยู่ตำแหน่งที่ [0] และ อยู่ตำแหน่งที่[1]
           const currentYear = this.stock.period.split(' ')[0];
 
           for (const quarter of this.quarters) {
@@ -325,7 +326,6 @@ export class IncomeStatementComponent implements OnInit {
 
 
     // test area
-
 
     //test table
     const tableName1 = "#tableQoQ";

@@ -8,6 +8,9 @@ import { catchError } from 'rxjs/operators';
 })
 
 export class StockService {
+  static GetLastQuarterList(arg0: string, arg1: number): any {
+    throw new Error('Method not implemented.');
+  }
 
   private api_url: string = '/api'
   private defaultSymbol:string = 'CPALL'
@@ -34,8 +37,9 @@ export class StockService {
   }
 
 
-
+  //FN :  รับข้อมูล 'Q3/2023' แล้ว Return กลับเป็น '2023 Q3'
   ConvertPeriodToYQ(input: string): string {
+
     // Split the input string into parts using '/'
     const parts = input.split('/');
 
@@ -54,6 +58,7 @@ export class StockService {
     return input;
   }
 
+  // FN : คำนวณ Last Year Q : ex. '2023 Q3' => '2022 Q3'
   SubtractOneYear(input: string): string {
     // Split the input string into parts using space
     const parts = input.split(' ');
@@ -76,6 +81,7 @@ export class StockService {
   }
 
   // FN : สร้าง Array โดยรับค่า Year Q ล่าสุดแล้ว ย้อนหลัง จำนวน i ปี เพื่อสร้างเป็น Array ที่ต้องการ
+  // รับค่า 'startYear : 2023 Q3' , numberOfYears: 3 => return ['2023 Q3' , '2022 Q3' , '2021 Q3']
   GenYoYArray(startYear: string, numberOfYears: number): string[] {
     const result: string[] = [];
 
@@ -88,6 +94,11 @@ export class StockService {
 
     return result.reverse();
   }
+
+
+
+
+
 
   // FN : รวมข้อมูล YQ และ Data เข้าไว้ด้วยกัน เอาไว้ใช้ แสดงผลใน กราฟ ที่มี dataset
   CombineYQData(fsValue: Record<string, number[]>, yearsQuarters: Record<string, string[]>): Record<string, any>[] {

@@ -1,7 +1,7 @@
 import { controllers } from 'chart.js';
 import {TabulatorFull as Tabulator} from 'tabulator-tables';
-
-let incomeTemplate:any = [];
+import { StockService } from '../stock.service';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 const plData = [
   { item: 'Revenue From Operations',},
@@ -24,15 +24,94 @@ const GetPlTemplate = (stock: any): any => stock.fs_templates.pl.income;
 
 // FN : เปลี่ยน #HEADER กับ ITEM ให้เป็น ข้อความที่จะเปลี่ยนต้องอยู่ใน {item: }
 //
-function replaceItemAndHeaderInData(data: any[]): any[] {
-  function replaceItemAndHeader(item: string): string {
+function ReplaceItemAndHeaderInData(data: any[]): any[] {
+  function ReplaceItemAndHeader(item: string): string {
       return item.replace("#ITEM", "").replace("#HEADER", "");
   }
 
   return data.map(obj => ({
       id: obj.id,
-      item: replaceItemAndHeader(obj.item)
+      item: ReplaceItemAndHeader(obj.item)
   }));
+}
+
+//
+
+/**
+ * Generate a list of quarters in reverse chronological order, starting from a given year and quarter.
+ *
+ * @param {string} startYear - The starting year and quarter in the format "YYYY QX", e.g., "2023 Q3".
+ * @param {number} numberOfQuarter - The number of quarters to generate.
+ * @returns {string[]} An array of strings representing quarters in reverse chronological order.
+ *
+ * Usage example:
+ * const resultArray = GetLastQuarterList('2023 Q3', 5);
+ * console.log(resultArray);
+ * Output: ['2023 Q3', '2023 Q2', '2023 Q1', '2022 Q4', '2022 Q3']
+ */
+function GetLastQuarterList(startYear: string, numberOfQuarter: number): string[] {
+  const result: string[] = [];
+
+  const [yearStr, quarterStr] = startYear.split(' ');
+
+  if (yearStr && quarterStr) {
+    let year = parseInt(yearStr);
+    let quarter = parseInt(quarterStr.slice(1)); // Remove the 'Q' and parse the quarter part
+
+    for (let i = 0; i < numberOfQuarter; i++) {
+      result.push(`${year} Q${quarter}`);
+
+      if (quarter === 1) {
+        quarter = 4;
+        year -= 1;
+      } else {
+        quarter -= 1;
+      }
+    }
+  }
+
+  return result;
+}
+
+/**
+ * Create table columns for a Tabulator table based on an array of quarters.
+ *
+ * @param {string[]} quarters - An array of quarter strings in the format "YYYY QX".
+ * @returns {Tabulator.ColumnDefinition[]} An array of column definitions for Tabulator.
+ *
+ * Usage example:
+ *
+ * // Define an array of quarters
+ * const quartersArray = ['2023 Q3', '2023 Q2', '2023 Q1', '2022 Q4', '2022 Q3'];
+ *
+ * // Create table columns using the function
+ * const tableColumns = createTableColumns(quartersArray);
+ *
+ * // Initialize a Tabulator table with the generated columns
+ * const table = new Tabulator("#example-table", {
+ *   columns: tableColumns,
+ *   // ... other Tabulator options
+ * });
+ *
+ * Expected result:
+ * The function will generate an array of column definitions suitable for a Tabulator table,
+ * with "Items" as the first column and each quarter as subsequent columns. The Tabulator
+ * table can then be initialized using these columns.
+ */
+function CreateTableColumns(quarters: string[]) {
+  const columns = [
+    { title: "Items", field: "item", headerSort: false }
+  ];
+
+  for (const quarter of quarters) {
+    columns.push({
+      title: quarter,
+      field: quarter,
+      headerSort: false
+    });
+  }
+
+  return columns;
 }
 
 
@@ -76,7 +155,14 @@ const createTableQoQ = (tableName: string, data: any[]): Tabulator => {
 };
 
 const createTableMain = (tableName: string, data: any[]): Tabulator => {
-  // console.log('Item data : ' ,data) //ทดสอบ
+  // console.log('lastQuarterList : ' ,data) //ทดสอบ
+  const lastQuarterList = GetLastQuarterList('2023 Q3', 5)
+  // console.log('lastQuarterList : ', lastQuarterList)
+
+  const tableColumns = CreateTableColumns(lastQuarterList);
+  console.log('Testing createTableColumns ',tableColumns);
+
+
   const plTemplate = GetPlTemplate(data);
 
   let tableData:any = [];
@@ -90,7 +176,7 @@ const createTableMain = (tableName: string, data: any[]): Tabulator => {
   });
 
   // Replace #ITEM and #HEADER with ""
-  tableData = replaceItemAndHeaderInData(tableData)
+  tableData = ReplaceItemAndHeaderInData(tableData)
 
 
   // console.log('Template : ',plTemplate)
@@ -103,11 +189,7 @@ const createTableMain = (tableName: string, data: any[]): Tabulator => {
     layout:"fitData",
     movableColumns:false,
 
-    columns: [
-      // { title: "ลำดับ", field: "id"},
-      // { title: "id", field: "id", width: 10, headerSort:false,},
-      { title: "Items", field: "item", hozAlign: "left", formatter: "plaintext", headerSort:false,},
-    ],
+    columns: tableColumns,
 
   //  สร้างเงื่อนไข ถ้าข้อมูลตรงกับที่ต้องการ ปรับ style ในแถวนั้น
     rowFormatter:function(row){
