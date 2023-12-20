@@ -118,7 +118,15 @@ function CreateTableColumns(quarters: string[]) {
       width: 160,
       headerHozAlign:"right",
       hozAlign: "right",
-      headerSort: false
+      headerSort: false,
+      formatter:"money", formatterParams:{
+        decimal:".",
+        thousand:",",
+        symbol:"",
+        symbolAfter:"p",
+        negativeSign:true,
+        precision:false,
+    }
     });
   }
 
@@ -187,7 +195,7 @@ function UpdateValueTableData(dataPL: any, tableData: any): any {
     if (dataPLItem) {
       // Merge financial data directly into tableItem
       Object.keys(dataPLItem).forEach((key) => {
-        tableItem[key] = dataPLItem[key].value;
+        tableItem[key] = parseFloat(dataPLItem[key].value).toFixed(2);
       });
     }
     return tableItem;
@@ -216,7 +224,8 @@ const createTableQoQ = (tableName: string, data: any[]): Tabulator => {
       if(data.item == "Total Revenue" ||
       data.item == "Total Cost" ||
       data.item == "Net Profit (Loss)"||
-      data.item == "EPS"
+      data.item == "Net Profit (Loss) For The Period / Profit (Loss) For The Period From Continuing Operations" ||
+      data.item == "xxx"
       ){
           row.getElement().style.borderBottom = "thin double #888";
           row.getElement().style.font = "bold 15px Kanit";
@@ -282,7 +291,9 @@ const createTableMain = (tableName: string, data: any[]): Tabulator => {
       if(data.item == "Total Revenue" ||
       data.item == "Total Cost And Expenses" ||
       data.item == "Net Profit (Loss)"||
-      data.item == "FYI"
+      data.item == "Basic Earnings (Loss) Per Share (Baht/Share)"||
+      data.item == "Total Comprehensive Income (Expense) Attributable To : Non-Controlling Interests"||
+      data.item == "Net Profit (Loss) For The Period / Profit (Loss) For The Period From Continuing Operations"
       ){
           row.getElement().style.borderBottom = "thin double #888";
           row.getElement().style.font = "bold 15px Kanit";
