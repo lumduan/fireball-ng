@@ -15,5 +15,12 @@ import { StockComponent } from './stock/stock.component';
 export class AppComponent {
   title = 'ng-fireball';
 
+  activeTab = 0;
+
+  tabs = [
+    { title: 'Home', content: 'Lorem ipsum dolor sit amet...' },
+    { title: 'Menu 1', content: 'Ut enim ad minim veniam...' },
+    { title: 'Menu 2', content: 'Sed ut perspiciatis unde omnis iste natus error...' }
+  ];
 
 }

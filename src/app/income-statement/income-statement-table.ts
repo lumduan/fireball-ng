@@ -85,7 +85,7 @@ function GetLastQuarterList(startYear: string, numberOfQuarter: number): string[
  * const quartersArray = ['2023 Q3', '2023 Q2', '2023 Q1', '2022 Q4', '2022 Q3'];
  *
  * // Create table columns using the function
- * const tableColumns = createTableColumns(quartersArray);
+ * const tableColumns = CreateTableColumns(quartersArray);
  *
  * // Initialize a Tabulator table with the generated columns
  * const table = new Tabulator("#example-table", {
@@ -98,15 +98,26 @@ function GetLastQuarterList(startYear: string, numberOfQuarter: number): string[
  * with "Items" as the first column and each quarter as subsequent columns. The Tabulator
  * table can then be initialized using these columns.
  */
+
+
 function CreateTableColumns(quarters: string[]) {
-  const columns = [
-    { title: "Items", field: "item", headerSort: false }
+  const columns:any = [
+    { title: "Items",
+    field: "item",
+    width: 300,
+    headerHozAlign:"left",
+    hozAlign: "left",
+    headerSort: false,
+    },
   ];
 
   for (const quarter of quarters) {
     columns.push({
       title: quarter,
       field: quarter,
+      width: 160,
+      headerHozAlign:"right",
+      hozAlign: "right",
       headerSort: false
     });
   }
@@ -127,9 +138,9 @@ const createTableQoQ = (tableName: string, data: any[]): Tabulator => {
       // { title: "ลำดับ", field: "id"},
       // { title: "id", field: "id", width: 10, headerSort:false,},
       { title: "Items", field: "item", width: 190, hozAlign: "left", formatter: "plaintext", headerSort:false,},
-      { title: "2023 Q3", field: "periodA", width: 120, hozAlign: "right", formatter: "plaintext", headerSort:false,},
-      { title: "2022 Q3", field: "periodB", width: 120, hozAlign: "right", formatter: "plaintext", headerSort:false,},
-      { title: "2021 Q3", field: "periodB", width: 120, hozAlign: "right", formatter: "plaintext", headerSort:false,},
+      { title: "2023 Q3", field: "periodA", width: 120, headerHozAlign:"right", hozAlign: "right", formatter: "plaintext", headerSort:false,},
+      { title: "2022 Q3", field: "periodB", width: 120, headerHozAlign:"right", hozAlign: "right", formatter: "plaintext", headerSort:false,},
+      { title: "2021 Q3", field: "periodB", width: 120, headerHozAlign:"right", hozAlign: "right", formatter: "plaintext", headerSort:false,},
     ],
 
     // สร้างเงื่อนไข ถ้าข้อมูลตรงกับที่ต้องการ ปรับ style ในแถวนั้น
@@ -189,15 +200,16 @@ const createTableMain = (tableName: string, data: any[]): Tabulator => {
     layout:"fitData",
     movableColumns:false,
 
+
     columns: tableColumns,
 
   //  สร้างเงื่อนไข ถ้าข้อมูลตรงกับที่ต้องการ ปรับ style ในแถวนั้น
     rowFormatter:function(row){
       var data = row.getData();
       if(data.item == "Total Revenue" ||
-      data.item == "Total Cost" ||
+      data.item == "Total Cost And Expenses" ||
       data.item == "Net Profit (Loss)"||
-      data.item == "EPS"
+      data.item == "FYI"
       ){
           row.getElement().style.borderBottom = "thin double #888";
           row.getElement().style.font = "bold 15px Kanit";

@@ -104,6 +104,8 @@ export class IncomeStatementComponent implements OnInit {
           // ปรับค่า period จาก 'Q/Y' ให้เป็น 'Y Q'
           data.period = this.stockService.ConvertPeriodToYQ(data.period);
           this.stock = data;
+          const tableMain = '#tableMain';
+          createTableMain(tableMain, this.stock);
 
           // คำนวณ Last Year Q : ex. '2023 Q3' => '2022 Q3'
           const lastYear: string = this.stockService.SubtractOneYear(this.stock.period)
@@ -329,7 +331,7 @@ export class IncomeStatementComponent implements OnInit {
 
     //test table
     const tableName1 = "#tableQoQ";
-    const tableName2 = '#tableMain';
+
     const tableData = [
       { id: 0, item: this.stock.symbol,},
     ];
@@ -345,7 +347,7 @@ export class IncomeStatementComponent implements OnInit {
 
     const tableQoQ = createTableQoQ(tableName1, tableData); // Create the table with the specified name and data
     // console.log('Test tableQoQ : ', tableQoQ)
-    const tableMain = createTableMain(tableName2, this.stock); // Create the table with the specified name and data
+    // const tableMain = createTableMain(tableName2, this.stock); // Create the table with the specified name and data
 
     //
 
