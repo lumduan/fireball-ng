@@ -243,7 +243,7 @@ const createTableQoQ = (tableName: string, data: any[]): Tabulator => {
 
 const createTableMain = (tableName: string, data: any[]): Tabulator => {
   // console.log('lastQuarterList : ' ,data) //ทดสอบ
-  const lastQuarterList = GetLastQuarterList('2023 Q3', 5)
+  const lastQuarterList = GetLastQuarterList('2023 Q3', 20)
   // console.log('lastQuarterList : ', lastQuarterList)
 
   const tableColumns = CreateTableColumns(lastQuarterList);
@@ -291,6 +291,7 @@ const createTableMain = (tableName: string, data: any[]): Tabulator => {
       if(data.item == "Total Revenue" ||
       data.item == "Total Cost And Expenses" ||
       data.item == "Net Profit (Loss)"||
+      data.item == "Net Interest Income"||
       data.item == "Basic Earnings (Loss) Per Share (Baht/Share)"||
       data.item == "Total Comprehensive Income (Expense) Attributable To : Non-Controlling Interests"||
       data.item == "Net Profit (Loss) For The Period / Profit (Loss) For The Period From Continuing Operations"
