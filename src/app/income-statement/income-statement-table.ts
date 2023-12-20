@@ -24,7 +24,7 @@ const GetPlTemplate = (stock: any): any => stock.fs_templates.pl.income;
 
 // FN : เปลี่ยน #HEADER กับ ITEM ให้เป็น ข้อความที่จะเปลี่ยนต้องอยู่ใน {item: }
 //
-function ReplaceItemAndHeaderInData(data: any[]): any[] {
+function AddPlTableRow(data: any[]): any[] {
   function ReplaceItemAndHeader(item: string): string {
       return item.replace("#ITEM", "").replace("#HEADER", "");
   }
@@ -125,7 +125,74 @@ function CreateTableColumns(quarters: string[]) {
   return columns;
 }
 
-
+/**
+ * Function: UpdateValueTableData
+ * Purpose:
+ *   This function is designed to merge financial data from the dataPL object into each item of the tableData array.
+ *   It updates each item in tableData with corresponding financial data found in dataPL.pl, keyed by "YYYY QX".
+ *
+ * How it works:
+ *   - The function iterates over each item in the tableData array.
+ *   - For each item, it checks for corresponding financial data in dataPL.pl based on the item's name.
+ *   - If matching financial data is found, the function merges this data into the tableData item.
+ *   - Each key representing a quarter (e.g., "2021 Q1") and its value from dataPL.pl is added to the respective item in tableData.
+ *   - The function returns an updated tableData array with merged financial data.
+ *
+ * Parameters:
+ *   - dataPL: An object containing financial data. It should have a structure where dataPL.pl is an object with keys
+ *             representing different financial metrics, each containing a sub-object keyed by "YYYY QX".
+ *   - tableData: An array of objects, each with at least an 'item' property, representing different financial metrics.
+ *
+ * Returns:
+ *   - An updated array of tableData where each item contains its original properties plus the corresponding financial data.
+ *
+ * Sample Usage and Output:
+ *
+ *   // Sample input dataPL object
+ *   const dataPL = {
+ *     pl: {
+ *       "Revenue From Operations": {
+ *         "2021 Q1": { value: 100000 },
+ *         "2021 Q2": { value: 110000 }
+ *         // ... more quarters
+ *       },
+ *       // ... more items
+ *     }
+ *   };
+ *
+ *   // Sample input tableData array
+ *   const tableData = [
+ *     { id: 1, item: "Revenue From Operations" }
+ *     // ... more items
+ *   ];
+ *
+ *   // Calling the function
+ *   const updatedTableData = UpdateValueTableData(dataPL, tableData);
+ *
+ *   // Expected output
+ *   // [
+ *   //   {
+ *   //     id: 1,
+ *   //     item: "Revenue From Operations",
+ *   //     "2021 Q1": 100000,
+ *   //     "2021 Q2": 110000
+ *   //     // ... more quarters
+ *   //   },
+ *   //   // ... more items with their respective updated financial data
+ *   // ]
+ */
+function UpdateValueTableData(dataPL: any, tableData: any): any {
+  return tableData.map((tableItem: any) => {
+    const dataPLItem = dataPL.pl[tableItem.item];
+    if (dataPLItem) {
+      // Merge financial data directly into tableItem
+      Object.keys(dataPLItem).forEach((key) => {
+        tableItem[key] = dataPLItem[key].value;
+      });
+    }
+    return tableItem;
+  });
+}
 
 const createTableQoQ = (tableName: string, data: any[]): Tabulator => {
 
@@ -173,7 +240,6 @@ const createTableMain = (tableName: string, data: any[]): Tabulator => {
   const tableColumns = CreateTableColumns(lastQuarterList);
   console.log('Testing createTableColumns ',tableColumns);
 
-
   const plTemplate = GetPlTemplate(data);
 
   let tableData:any = [];
@@ -187,16 +253,23 @@ const createTableMain = (tableName: string, data: any[]): Tabulator => {
   });
 
   // Replace #ITEM and #HEADER with ""
-  tableData = ReplaceItemAndHeaderInData(tableData)
+  tableData = AddPlTableRow(tableData)
 
 
   // console.log('Template : ',plTemplate)
   console.log('Template Edited Replace : ', tableData)
 
+  const updateValueTableData = UpdateValueTableData(data,tableData)
+
+  console.log('updateValueTableData : ', updateValueTableData)
+
+
+
+
   //Create table with tableData
   const table = new Tabulator(tableName, {
     height:"100%",
-    data: tableData, // <<==== ใส่ชุดข้อมูลตรงนี้
+    data: updateValueTableData, // <<==== ใส่ชุดข้อมูลตรงนี้
     layout:"fitData",
     movableColumns:false,
 
