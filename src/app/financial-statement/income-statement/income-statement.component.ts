@@ -2,6 +2,7 @@ import { Component, OnInit,OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { StockService } from '../../stock.service';
+import { FinancialService } from '../financial-statement.service';
 import { Chart, controllers, registerables } from 'chart.js/auto';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Subject, takeUntil } from 'rxjs';
@@ -50,15 +51,21 @@ export class IncomeStatementComponent implements OnInit {
   chartNetProfit: any;
 
   stockService: StockService;
+  financialService: FinancialService;
   dataFrame: any;
   tableQoQ: Tabulator | undefined;
   tableMain: Tabulator | undefined;
   PlTable: any;
   plTemplate: any = [];
 
-  constructor(stockService: StockService) {
+  constructor(stockService: StockService, financialService: FinancialService) {
     this.stockService = stockService;
+    this.financialService = financialService;
   }
+
+  
+
+  
 
 
 
@@ -102,7 +109,9 @@ export class IncomeStatementComponent implements OnInit {
       .subscribe(
         (data) => {
           // ปรับค่า period จาก 'Q/Y' ให้เป็น 'Y Q'
-          data.period = this.stockService.ConvertPeriodToYQ(data.period);
+          data.period = this.financialService.ConvertPeriodToYQ(data.period);
+          
+          
           this.stock = data;
 
           // สร้าง Table QoQ
@@ -114,7 +123,7 @@ export class IncomeStatementComponent implements OnInit {
           createTableMain(tableMain, this.stock);
 
           // คำนวณ Last Year Q : ex. '2023 Q3' => '2022 Q3'
-          const lastYear: string = this.stockService.SubtractOneYear(this.stock.period)
+          const lastYear: string = this.financialService.SubtractOneYear(this.stock.period)
 
           this.stock.totalRevenue = this.stock.pl['Total Revenue'][this.stock.period].value
           this.stock.totalRevenueLastYear = this.stock.pl['Total Revenue'][lastYear].value
@@ -144,7 +153,7 @@ export class IncomeStatementComponent implements OnInit {
           const currentYear = this.stock.period.split(' ')[0];
 
           for (const quarter of this.quarters) {
-            const yearQuarter = this.stockService.GenYoYArray(`${currentYear} ${quarter}`, this.numberPastofYear);
+            const yearQuarter = this.financialService.GenYoYArray(`${currentYear} ${quarter}`, this.numberPastofYear);
 
 
             // Initialize arrays if they don't exist
@@ -175,9 +184,9 @@ export class IncomeStatementComponent implements OnInit {
           // console.log('YOY Data : ',this.yoy)
 
           // PrepareData to Chart
-          const chartTotalRevenueData = this.stockService.CombineYQData(this.yoy.totalRevenue,this.yoy.yearsQuarters);
-          const chartGrossProfitData = this.stockService.CombineYQData(this.yoy.grossProfit,this.yoy.yearsQuarters);
-          const chartNetProfitData = this.stockService.CombineYQData(this.yoy.netProfit,this.yoy.yearsQuarters);
+          const chartTotalRevenueData = this.financialService.CombineYQData(this.yoy.totalRevenue,this.yoy.yearsQuarters);
+          const chartGrossProfitData = this.financialService.CombineYQData(this.yoy.grossProfit,this.yoy.yearsQuarters);
+          const chartNetProfitData = this.financialService.CombineYQData(this.yoy.netProfit,this.yoy.yearsQuarters);
           // console.log('Data Combile : ',chartTotalRevenueData)
 
 
