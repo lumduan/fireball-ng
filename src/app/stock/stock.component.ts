@@ -2,12 +2,11 @@ import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { StockService } from '../stock.service';
 import { IncomeStatementComponent } from '../financial-statement/income-statement/income-statement.component';
-import { FindStockComponent } from '../find-stock/find-stock.component';
 
 @Component({
   selector: 'app-stock',
   standalone: true,
-  imports: [IncomeStatementComponent,FindStockComponent,FormsModule],
+  imports: [IncomeStatementComponent,FormsModule],
   templateUrl: './stock.component.html',
   styleUrl: './stock.component.css'
 })
