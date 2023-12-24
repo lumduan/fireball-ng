@@ -3,21 +3,6 @@ import {TabulatorFull as Tabulator} from 'tabulator-tables';
 import { StockService } from '../stock.service';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 
-const plData = [
-  { item: 'Revenue From Operations',},
-  { item: 'Interest And Dividend',},
-  { item: 'Other Revenue',},
-  { item: 'Total Revenue',},
-  { item: 'Cost Of Sales',},
-  { item: 'Selling Expenses',},
-  { item: 'Administrative Expenses',},
-  { item: 'Total Cost',},
-  { item: 'EBIT',},
-  { item: 'Income Tax',},
-  { item: 'Net Profit (Loss)',},
-  { item: 'EPS',},
-];
-
 // FN : ดู Template จากข้อมูล stock
 const GetPlTemplate = (stock: any): any => stock.fs_templates.pl.income;
 
@@ -202,19 +187,34 @@ function UpdateValueTableData(dataPL: any, tableData: any): any {
   });
 }
 
-const createTableQoQ = (tableName: string, data: any[]): Tabulator => {
+const createTableQoQ = (tableName: string, data: any): Tabulator => {
+
+  const plQoQData = [
+    { item: 'Revenue From Operations',},
+    { item: 'Interest And Dividend',},
+    { item: 'Other Revenue',},
+    { item: 'Total Revenue',},
+    { item: 'Cost Of Sales',},
+    { item: 'Selling Expenses',},
+    { item: 'Administrative Expenses',},
+    { item: 'Total Cost',},
+    { item: 'EBIT',},
+    { item: 'Income Tax',},
+    { item: 'Net Profit (Loss)',},
+    { item: 'EPS',},
+  ];
 
   const table = new Tabulator(tableName, {
     height:"100%",
-    data: plData, // Use the provided data
+    data: plQoQData, // Use the provided data
     layout:"fitData",
     movableColumns:false,
     columns: [
       // { title: "ลำดับ", field: "id"},
       // { title: "id", field: "id", width: 10, headerSort:false,},
       { title: "Items", field: "item", width: 190, hozAlign: "left", formatter: "plaintext", headerSort:false,},
-      { title: "2023 Q3", field: "periodA", width: 120, headerHozAlign:"right", hozAlign: "right", formatter: "plaintext", headerSort:false,},
-      { title: "2022 Q3", field: "periodB", width: 120, headerHozAlign:"right", hozAlign: "right", formatter: "plaintext", headerSort:false,},
+      { title: data.period, field: "periodA", width: 120, headerHozAlign:"right", hozAlign: "right", formatter: "plaintext", headerSort:false,},
+      { title: data.period, field: "periodB", width: 120, headerHozAlign:"right", hozAlign: "right", formatter: "plaintext", headerSort:false,},
       { title: "2021 Q3", field: "periodB", width: 120, headerHozAlign:"right", hozAlign: "right", formatter: "plaintext", headerSort:false,},
     ],
 
@@ -241,9 +241,10 @@ const createTableQoQ = (tableName: string, data: any[]): Tabulator => {
   return table;
 };
 
-const createTableMain = (tableName: string, data: any[]): Tabulator => {
-  // console.log('lastQuarterList : ' ,data) //ทดสอบ
-  const lastQuarterList = GetLastQuarterList('2023 Q3', 20)
+const createTableMain = (tableName: string, data: any): Tabulator => {
+
+  // สร้าง Array ไว้เก็บจำนวนปีเริ่มจาก Year Q ปัจจุบัน ย้อนหลังไปจำนวน x ปี
+  const lastQuarterList = GetLastQuarterList(data.period, 20)
   // console.log('lastQuarterList : ', lastQuarterList)
 
   const tableColumns = CreateTableColumns(lastQuarterList);
@@ -287,14 +288,14 @@ const createTableMain = (tableName: string, data: any[]): Tabulator => {
 
   //  สร้างเงื่อนไข ถ้าข้อมูลตรงกับที่ต้องการ ปรับ style ในแถวนั้น
     rowFormatter:function(row){
-      var data = row.getData();
-      if(data.item == "Total Revenue" ||
-      data.item == "Total Cost And Expenses" ||
-      data.item == "Net Profit (Loss)"||
-      data.item == "Net Interest Income"||
-      data.item == "Basic Earnings (Loss) Per Share (Baht/Share)"||
-      data.item == "Total Comprehensive Income (Expense) Attributable To : Non-Controlling Interests"||
-      data.item == "Net Profit (Loss) For The Period / Profit (Loss) For The Period From Continuing Operations"
+      var rowData = row.getData();
+      if(rowData.item == "Total Revenue" ||
+      rowData.item == "Total Cost And Expenses" ||
+      rowData.item == "Net Profit (Loss)"||
+      rowData.item == "Net Interest Income"||
+      rowData.item == "Basic Earnings (Loss) Per Share (Baht/Share)"||
+      rowData.item == "Total Comprehensive Income (Expense) Attributable To : Non-Controlling Interests"||
+      rowData.item == "Net Profit (Loss) For The Period / Profit (Loss) For The Period From Continuing Operations"
       ){
           row.getElement().style.borderBottom = "thin double #888";
           row.getElement().style.font = "bold 15px Kanit";

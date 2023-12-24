@@ -95,11 +95,6 @@ export class StockService {
     return result.reverse();
   }
 
-
-
-
-
-
   // FN : รวมข้อมูล YQ และ Data เข้าไว้ด้วยกัน เอาไว้ใช้ แสดงผลใน กราฟ ที่มี dataset
   CombineYQData(fsValue: Record<string, number[]>, yearsQuarters: Record<string, string[]>): Record<string, any>[] {
     const quarters = Object.keys(fsValue);

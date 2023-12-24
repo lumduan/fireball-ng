@@ -104,6 +104,12 @@ export class IncomeStatementComponent implements OnInit {
           // ปรับค่า period จาก 'Q/Y' ให้เป็น 'Y Q'
           data.period = this.stockService.ConvertPeriodToYQ(data.period);
           this.stock = data;
+
+          // สร้าง Table QoQ
+          const tableQoQ = '#tableQoQ';
+          createTableQoQ(tableQoQ, this.stock);
+
+          // สร้าง Table Main
           const tableMain = '#tableMain';
           createTableMain(tableMain, this.stock);
 
@@ -318,42 +324,8 @@ export class IncomeStatementComponent implements OnInit {
           console.error('Error:', error);
         }
       )
-
       // Teble Area
-      this.GenTableQoQ();
-  }
-
-
-  GenTableQoQ(): void {
-
-
-    // test area
-
-    //test table
-    const tableName1 = "#tableQoQ";
-
-    const tableData = [
-      { id: 0, item: this.stock.symbol,},
-    ];
-
-    Object.entries(this.plTemplate).forEach(([key, value]: [string, unknown]) => {
-      if (typeof key === 'string' && typeof value === 'string' && value.endsWith('#ITEM')) {
-        // Add a new row to tableData for each ITEM in plTemplate
-        tableData.push({ id: parseInt(key), item: value });
-      }
-    });
-
-    // console.log("Test TableData : ", tableData)
-
-    const tableQoQ = createTableQoQ(tableName1, tableData); // Create the table with the specified name and data
-    // console.log('Test tableQoQ : ', tableQoQ)
-    // const tableMain = createTableMain(tableName2, this.stock); // Create the table with the specified name and data
-
-    //
 
   }
-
 
 }
-
-
