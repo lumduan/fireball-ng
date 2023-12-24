@@ -1,6 +1,6 @@
 import { controllers } from 'chart.js';
 import {TabulatorFull as Tabulator} from 'tabulator-tables';
-import { StockService } from '../stock.service';
+import { StockService } from '../../stock.service';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 
 // FN : ดู Template จากข้อมูล stock

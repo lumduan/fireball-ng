@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { StockService } from '../stock.service';
-import { IncomeStatementComponent } from '../income-statement/income-statement.component';
+import { IncomeStatementComponent } from '../financial-statement/income-statement/income-statement.component';
 import { FindStockComponent } from '../find-stock/find-stock.component';
 
 @Component({

@@ -1,7 +1,7 @@
 import { Component, OnInit,OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { StockService } from '../stock.service';
+import { StockService } from '../../stock.service';
 import { Chart, controllers, registerables } from 'chart.js/auto';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Subject, takeUntil } from 'rxjs';

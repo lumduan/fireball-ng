@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
 import { FindStockComponent } from './find-stock/find-stock.component'
-import { IncomeStatementComponent } from './income-statement/income-statement.component';
+import { IncomeStatementComponent } from './financial-statement/income-statement/income-statement.component';
 import { StockComponent } from './stock/stock.component';
 
 @Component({
