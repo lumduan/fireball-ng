@@ -13,7 +13,7 @@ import { StockComponent } from './stock/stock.component';
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  title = 'ng-fireball';
+  title = 'CheckHoon';
 
   activeTab = 0;
 
