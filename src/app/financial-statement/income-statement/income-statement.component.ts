@@ -63,9 +63,9 @@ export class IncomeStatementComponent implements OnInit {
     this.financialService = financialService;
   }
 
-  
 
-  
+
+
 
 
 
@@ -110,8 +110,8 @@ export class IncomeStatementComponent implements OnInit {
         (data) => {
           // ปรับค่า period จาก 'Q/Y' ให้เป็น 'Y Q'
           data.period = this.financialService.ConvertPeriodToYQ(data.period);
-          
-          
+
+
           this.stock = data;
 
           // สร้าง Table QoQ
@@ -153,7 +153,7 @@ export class IncomeStatementComponent implements OnInit {
           const currentYear = this.stock.period.split(' ')[0];
 
           for (const quarter of this.quarters) {
-            const yearQuarter = this.financialService.GenYoYArray(`${currentYear} ${quarter}`, this.numberPastofYear);
+            const yearQuarter = this.financialService.CreateYoYArray(`${currentYear} ${quarter}`, this.numberPastofYear);
 
 
             // Initialize arrays if they don't exist

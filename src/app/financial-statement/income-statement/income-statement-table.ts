@@ -2,10 +2,19 @@ import { controllers } from 'chart.js';
 import {TabulatorFull as Tabulator} from 'tabulator-tables';
 import { StockService } from '../../stock.service';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { FinancialService } from '../financial-statement.service';
 
 // FN : ดู Template จากข้อมูล stock
 const GetPlTemplate = (stock: any): any => stock.fs_templates.pl.income;
-
+const financialService = new FinancialService
+const currency = {
+  decimal:".",
+  thousand:",",
+  symbol:"",
+  symbolAfter:"p",
+  negativeSign:true,
+  precision:false,
+}
 
 // FN : เปลี่ยน #HEADER กับ ITEM ให้เป็น ข้อความที่จะเปลี่ยนต้องอยู่ใน {item: }
 //
@@ -85,7 +94,7 @@ function GetLastQuarterList(startYear: string, numberOfQuarter: number): string[
  */
 
 
-function CreateTableColumns(quarters: string[]) {
+function CreateMainTableColumns(quarters: string[]) {
   const columns:any = [
     { title: "Items",
     field: "item",
@@ -104,14 +113,8 @@ function CreateTableColumns(quarters: string[]) {
       headerHozAlign:"right",
       hozAlign: "right",
       headerSort: false,
-      formatter:"money", formatterParams:{
-        decimal:".",
-        thousand:",",
-        symbol:"",
-        symbolAfter:"p",
-        negativeSign:true,
-        precision:false,
-    }
+      formatter:"money",
+      formatterParams: currency
     });
   }
 
@@ -141,40 +144,40 @@ function CreateTableColumns(quarters: string[]) {
  *
  * Sample Usage and Output:
  *
- *   // Sample input dataPL object
+ *   /// Sample input dataPL object
  *   const dataPL = {
  *     pl: {
  *       "Revenue From Operations": {
  *         "2021 Q1": { value: 100000 },
  *         "2021 Q2": { value: 110000 }
- *         // ... more quarters
+ *          ... more quarters
  *       },
- *       // ... more items
+ *        ... more items
  *     }
  *   };
  *
- *   // Sample input tableData array
+ *   /// Sample input tableData array
  *   const tableData = [
  *     { id: 1, item: "Revenue From Operations" }
- *     // ... more items
+ *     /// ... more items
  *   ];
  *
- *   // Calling the function
+ *   /// Calling the function
  *   const updatedTableData = UpdateValueTableData(dataPL, tableData);
  *
- *   // Expected output
- *   // [
- *   //   {
- *   //     id: 1,
- *   //     item: "Revenue From Operations",
- *   //     "2021 Q1": 100000,
- *   //     "2021 Q2": 110000
- *   //     // ... more quarters
- *   //   },
- *   //   // ... more items with their respective updated financial data
- *   // ]
+ *   /// Expected output
+ *   /// [
+ *   ///   {
+ *   ///     id: 1,
+ *   ///     item: "Revenue From Operations",
+ *   ///     "2021 Q1": 100000,
+ *   ///     "2021 Q2": 110000
+ *   ///     ... more quarters
+ *      },
+ *      /// ... more items with their respective updated financial data
+ *    ]
  */
-function UpdateValueTableData(dataPL: any, tableData: any): any {
+function UpdateValueMainTableData(dataPL: any, tableData: any): any {
   return tableData.map((tableItem: any) => {
     const dataPLItem = dataPL.pl[tableItem.item];
     if (dataPLItem) {
@@ -189,20 +192,42 @@ function UpdateValueTableData(dataPL: any, tableData: any): any {
 
 const createTableQoQ = (tableName: string, data: any): Tabulator => {
 
-  const plQoQData = [
-    { item: 'Revenue From Operations',},
-    { item: 'Interest And Dividend',},
-    { item: 'Other Revenue',},
-    { item: 'Total Revenue',},
-    { item: 'Cost Of Sales',},
-    { item: 'Selling Expenses',},
-    { item: 'Administrative Expenses',},
-    { item: 'Total Cost',},
-    { item: 'EBIT',},
-    { item: 'Income Tax',},
-    { item: 'Net Profit (Loss)',},
-    { item: 'EPS',},
-  ];
+  const lastYears = financialService.CreateYoYArray(data.period, 3);
+
+  function CreateFinancialItem(displayName: string, dataKey: string, data: { pl: { [x: string]: { [x: string]: { value: string; }; }; }; }, lastYears: (string | number)[]) {
+    return {
+        item: displayName,
+        2: parseFloat(data.pl[dataKey][lastYears[2]].value).toFixed(2),
+        1: parseFloat(data.pl[dataKey][lastYears[1]].value).toFixed(2),
+        0: parseFloat(data.pl[dataKey][lastYears[0]].value).toFixed(2)
+    };
+}
+
+const financialItemMapping = {
+    'Revenue From Operations': 'Revenue From Operations',
+    'Interest And Dividend': 'Interest And Dividend Income',
+    'Other Income': 'Other Income',
+    'Total Revenue': 'Total Revenue',
+    'Cost Of Sales': 'Costs',
+    'Selling Expenses': 'Selling Expenses',
+    'Administrative Expenses': 'Administrative Expenses',
+    'Total Cost': 'Total Cost And Expenses',
+    'EBIT': 'Profit (Loss) Before Finance Costs And Income Tax Expense',
+    'Income Tax': 'Income Tax Expense',
+    'Net Profit (Loss)': 'Net Profit (Loss) For The Period / Profit (Loss) For The Period From Continuing Operations',
+    'EPS': 'Basic Earnings (Loss) Per Share (Baht/Share)'
+};
+
+// Assuming data and lastYears are already defined in your context
+// data = {...};
+// lastYears = [...];
+
+const plQoQData = Object.entries(financialItemMapping).map(([displayName, dataKey]) =>
+    CreateFinancialItem(displayName, dataKey, data, lastYears)
+);
+
+console.log(plQoQData);
+
 
   const table = new Tabulator(tableName, {
     height:"100%",
@@ -213,10 +238,11 @@ const createTableQoQ = (tableName: string, data: any): Tabulator => {
       // { title: "ลำดับ", field: "id"},
       // { title: "id", field: "id", width: 10, headerSort:false,},
       { title: "Items", field: "item", width: 190, hozAlign: "left", formatter: "plaintext", headerSort:false,},
-      { title: data.period, field: "periodA", width: 120, headerHozAlign:"right", hozAlign: "right", formatter: "plaintext", headerSort:false,},
-      { title: data.period, field: "periodB", width: 120, headerHozAlign:"right", hozAlign: "right", formatter: "plaintext", headerSort:false,},
-      { title: "2021 Q3", field: "periodB", width: 120, headerHozAlign:"right", hozAlign: "right", formatter: "plaintext", headerSort:false,},
+      { title: lastYears[2], field: "2", width: 120, headerHozAlign:"right", hozAlign: "right", headerSort:false, formatter:"money", formatterParams: currency },
+      { title: lastYears[1], field: "1", width: 120, headerHozAlign:"right", hozAlign: "right", headerSort:false, formatter:"money", formatterParams: currency },
+      { title: lastYears[0], field: "0", width: 120, headerHozAlign:"right", hozAlign: "right", headerSort:false, formatter:"money", formatterParams: currency },
     ],
+
 
     // สร้างเงื่อนไข ถ้าข้อมูลตรงกับที่ต้องการ ปรับ style ในแถวนั้น
     rowFormatter:function(row){
@@ -247,7 +273,7 @@ const createTableMain = (tableName: string, data: any): Tabulator => {
   const lastQuarterList = GetLastQuarterList(data.period, 20)
   // console.log('lastQuarterList : ', lastQuarterList)
 
-  const tableColumns = CreateTableColumns(lastQuarterList);
+  const tableColumns = CreateMainTableColumns(lastQuarterList);
   console.log('Testing createTableColumns ',tableColumns);
 
   const plTemplate = GetPlTemplate(data);
@@ -269,7 +295,7 @@ const createTableMain = (tableName: string, data: any): Tabulator => {
   // console.log('Template : ',plTemplate)
   console.log('Template Edited Replace : ', tableData)
 
-  const updateValueTableData = UpdateValueTableData(data,tableData)
+  const updateValueTableData = UpdateValueMainTableData(data,tableData)
 
   console.log('updateValueTableData : ', updateValueTableData)
 
@@ -314,3 +340,7 @@ const createTableMain = (tableName: string, data: any): Tabulator => {
 
 
 export { createTableQoQ, createTableMain,};
+  function CreateYoYArray(period: any, arg1: number) {
+    throw new Error('Function not implemented.');
+  }
+

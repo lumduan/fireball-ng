@@ -54,9 +54,37 @@ export class FinancialService {
     return input;
   }
 
-  // FN : สร้าง Array โดยรับค่า Year Q ล่าสุดแล้ว ย้อนหลัง จำนวน i ปี เพื่อสร้างเป็น Array ที่ต้องการ
-  // รับค่า 'startYear : 2023 Q3' , numberOfYears: 3 => return ['2023 Q3' , '2022 Q3' , '2021 Q3']
-  GenYoYArray(startYear: string, numberOfYears: number): string[] {
+  /*
+   * Function: CreateYoYArray
+   * Purpose:
+   *   Generates an array of years and quarters in a year-over-year (YoY) format.
+   *   This is useful for creating time series data for specific quarters across multiple years.
+   *
+   * How it works:
+   *   - Takes a starting year and quarter (e.g., '2023 Q3') and a number of years.
+   *   - Iteratively decrements the year while keeping the quarter constant.
+   *   - Constructs an array of these year-quarter combinations.
+   *
+   * Parameters:
+   *   - startYear: string - The starting year and quarter in the format 'YYYY QX'
+   *                         where YYYY is the year and QX is the quarter (e.g., 'Q3').
+   *
+   *   - numberOfYears: number - The number of years to include in the array,
+   *                              counting backwards from the start year.
+   *
+   * Returns:
+   *   - string[] - An array of year-quarter strings in reverse chronological order.
+   *                For example, if the start year is '2023 Q3' and the number of years is 3,
+   *                it returns ['2023 Q3', '2022 Q3', '2021 Q3'].
+   *
+   * Sample Usage and Output:
+   *   let startYear = '2023 Q3';
+   *   let numberOfYears = 3;
+   *   let yoyArray = CreateYoYArray(startYear, numberOfYears);
+   *   console.log(yoyArray); // Outputs: ['2023 Q3', '2022 Q3', '2021 Q3']
+   *
+   */
+  CreateYoYArray(startYear: string, numberOfYears: number): string[] {
     const result: string[] = [];
 
     const [year, quarter] = startYear.split(' ');
