@@ -114,6 +114,41 @@ export class FinancialService {
     return data;
   }
 
+/**
+ * Generate a list of quarters in reverse chronological order, starting from a given year and quarter.
+ *
+ * @param {string} startYear - The starting year and quarter in the format "YYYY QX", e.g., "2023 Q3".
+ * @param {number} numberOfQuarter - The number of quarters to generate.
+ * @returns {string[]} An array of strings representing quarters in reverse chronological order.
+ *
+ * Usage example:
+ * const resultArray = GetLastQuarterList('2023 Q3', 5);
+ * console.log(resultArray);
+ * Output: ['2023 Q3', '2023 Q2', '2023 Q1', '2022 Q4', '2022 Q3']
+ */
+  GetLastQuarterList(startYear: string, numberOfQuarter: number): string[] {
+    const result: string[] = [];
+
+    const [yearStr, quarterStr] = startYear.split(' ');
+
+    if (yearStr && quarterStr) {
+      let year = parseInt(yearStr);
+      let quarter = parseInt(quarterStr.slice(1)); // Remove the 'Q' and parse the quarter part
+
+      for (let i = 0; i < numberOfQuarter; i++) {
+        result.push(`${year} Q${quarter}`);
+
+        if (quarter === 1) {
+          quarter = 4;
+          year -= 1;
+        } else {
+          quarter -= 1;
+        }
+      }
+    }
+
+    return result;
+  }
 
 }
 
