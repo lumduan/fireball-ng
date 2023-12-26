@@ -157,18 +157,36 @@ const createTableQoQ = (tableName: string, data: any): Tabulator => {
 
   const lastYears = financialService.CreateYoYArray(data.period, 3);
 
-  function CreateFinancialItem(displayName: string, dataKey: string, data: { pl: { [x: string]: { [x: string]: { value: string; }; }; }; }, lastYears: (string | number)[]) {
+  function CreateFinancialItem(
+    displayName: string,
+    dataKey: string,
+    data: { pl: { [x: string]: { [x: string]: { value: string; }; }; }; },
+    lastYears: (string | number)[]
+  ) {
+    // Helper function to safely get the value
+    const getValue = (year: string | number): string => {
+        try {
+            if(data.pl[dataKey] && data.pl[dataKey][year] && data.pl[dataKey][year].value) {
+                return parseFloat(data.pl[dataKey][year].value).toFixed(2);
+            } else {
+                return "0";
+            }
+        } catch (error) {
+            return "0";
+        }
+    }
+
     return {
         item: displayName,
-        2: parseFloat(data.pl[dataKey][lastYears[2]].value).toFixed(2),
-        1: parseFloat(data.pl[dataKey][lastYears[1]].value).toFixed(2),
-        0: parseFloat(data.pl[dataKey][lastYears[0]].value).toFixed(2)
+        2: getValue(lastYears[2]),
+        1: getValue(lastYears[1]),
+        0: getValue(lastYears[0])
     };
-}
+  }
 
 const financialItemMapping = {
     'Revenue From Operations': 'Revenue From Operations',
-    'Interest And Dividend': 'Interest And Dividend Income',
+    // 'Interest And Dividend': 'Interest And Dividend Income',
     'Other Income': 'Other Income',
     'Total Revenue': 'Total Revenue',
     'Cost Of Sales': 'Costs',
