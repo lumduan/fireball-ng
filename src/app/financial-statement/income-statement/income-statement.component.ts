@@ -6,7 +6,6 @@ import { FinancialService } from '../financial-statement.service';
 import { Chart, controllers, registerables } from 'chart.js/auto';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Subject, takeUntil } from 'rxjs';
-import DataFrame from 'dataframe-js';
 import {TabulatorFull as Tabulator} from 'tabulator-tables';
 import { createTableQoQ, createTableMain } from './income-statement-table';
 import { ThisReceiver } from '@angular/compiler';
@@ -108,6 +107,7 @@ export class IncomeStatementComponent implements OnInit {
     this.stockService.GetFs(symbol, 'pl')
       .subscribe(
         (data) => {
+
           // ปรับค่า period จาก 'Q/Y' ให้เป็น 'Y Q'
           data.period = this.financialService.ConvertPeriodToYQ(data.period);
 

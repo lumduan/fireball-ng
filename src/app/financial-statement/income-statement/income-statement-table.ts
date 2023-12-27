@@ -1,12 +1,10 @@
-import { controllers } from 'chart.js';
 import {TabulatorFull as Tabulator} from 'tabulator-tables';
-import { StockService } from '../../stock.service';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { FinancialService } from '../financial-statement.service';
 
 // FN : ดู Template จากข้อมูล stock
 const GetPlTemplate = (stock: any): any => stock.fs_templates.pl.income;
 const financialService = new FinancialService
+// For use in Tabulator money format
 const currency = {
   decimal:".",
   thousand:",",
