@@ -61,7 +61,7 @@ function CreateMainTableColumns(quarters: string[]) {
   const columns:any = [
     { title: "Items",
     field: "item",
-    width: 300,
+    width: 350,
     headerHozAlign:"left",
     hozAlign: "left",
     headerSort: false,
@@ -159,7 +159,7 @@ const createTableQoQ = (tableName: string, data: any): Tabulator => {
 
   function CreateFinancialItem(
     displayName: string,
-    dataKey: string,
+    dataKey: any,
     data: { pl: { [x: string]: { [x: string]: { value: string; }; }; }; },
     lastYears: (string | number)[]
   ) {
@@ -184,30 +184,68 @@ const createTableQoQ = (tableName: string, data: any): Tabulator => {
     };
   }
 
-const financialItemMapping = {
-    'Revenue From Operations': 'Revenue From Operations',
-    // 'Interest And Dividend': 'Interest And Dividend Income',
-    'Other Income': 'Other Income',
-    'Total Revenue': 'Total Revenue',
-    'Cost Of Sales': 'Costs',
-    'Selling Expenses': 'Selling Expenses',
-    'Administrative Expenses': 'Administrative Expenses',
-    'Total Cost': 'Total Cost And Expenses',
-    'EBIT': 'Profit (Loss) Before Finance Costs And Income Tax Expense',
-    'Income Tax': 'Income Tax Expense',
-    'Net Profit (Loss)': 'Net Profit (Loss) For The Period / Profit (Loss) For The Period From Continuing Operations',
-    'EPS': 'Basic Earnings (Loss) Per Share (Baht/Share)'
-};
+  // แบ่งรายการแสดงผลในตารางตาม sector ของหุ้น
 
-// Assuming data and lastYears are already defined in your context
-// data = {...};
-// lastYears = [...];
+  let financialItemMapping = {}
 
-const plQoQData = Object.entries(financialItemMapping).map(([displayName, dataKey]) =>
-    CreateFinancialItem(displayName, dataKey, data, lastYears)
-);
+  if (data.sector === 'Banking') {
+    financialItemMapping = {
+      'Interest Income':'Interest Income',
+      'Interest Expenses' : 'Interest Expenses',
+      'Net Interest Income': 'Net Interest Income',
+      'Fees & Service Income':'Fees And Service Income',
+      'Fees & Service Expenses':'Fees And Service Expenses',
+      'Net Fees & Service Income':'Net Fees And Service Income',
+      'Other Operating Income':'Other Operating Income',
+      'Other Operating Expenses':'Other Operating Expenses',
+      'Expected Credit Losses' : '(Reversal Of) Expected Credit Losses',
+      'EBIT' : 'Profit (Loss) From Operating Before Income Tax Expense',
+      'Income Tax Expense':'Income Tax Expense',
+      'Net Profit (Loss)':'Net Profit (Loss) For The Period',
+      'EPS': 'Basic Earnings (Loss) Per Share (Baht/Share)',
+    }
+  }
 
-console.log(plQoQData);
+  else if (data.sector === 'Finance and Securities') {
+    financialItemMapping = {
+      'Revenue From Operations': 'Revenue From Operations',
+      'Other Income': 'Other Income',
+      'Total Revenue': 'Total Revenue',
+      // 'Fees And Service Expenses': 'Fees And Service Expenses',
+      'Administrative Expenses': 'Administrative Expenses',
+      'Expected Credit Losses' : '(Reversal Of) Expected Credit Losses',
+      'Total Cost': 'Total Cost And Expenses',
+      'EBIT': 'Profit (Loss) Before Finance Costs And Income Tax Expense',
+      'Finance Costs':'Finance Costs',
+      'Income Tax': 'Income Tax Expense',
+      'Net Profit (Loss)': 'Net Profit (Loss) For The Period',
+      'EPS': 'Basic Earnings (Loss) Per Share (Baht/Share)'
+    };
+  }
+
+  else{
+    financialItemMapping = {
+      'Revenue From Operations': 'Revenue From Operations',
+      'Other Income': 'Other Income',
+      'Total Revenue': 'Total Revenue',
+      'Cost Of Sales': 'Costs',
+      'Selling Expenses': 'Selling Expenses',
+      'Administrative Expenses': 'Administrative Expenses',
+      'Total Cost': 'Total Cost And Expenses',
+      'EBIT': 'Profit (Loss) Before Finance Costs And Income Tax Expense',
+      'Finance Costs':'Finance Costs',
+      'Income Tax': 'Income Tax Expense',
+      'Net Profit (Loss)': 'Net Profit (Loss) For The Period',
+      'EPS': 'Basic Earnings (Loss) Per Share (Baht/Share)'
+    };
+  }
+
+
+  const plQoQData = Object.entries(financialItemMapping).map(([displayName, dataKey]) =>
+      CreateFinancialItem(displayName, dataKey, data, lastYears)
+  );
+
+  // console.log(plQoQData);
 
 
   const table = new Tabulator(tableName, {
@@ -230,8 +268,12 @@ console.log(plQoQData);
       var data = row.getData();
       if(data.item == "Total Revenue" ||
       data.item == "Total Cost" ||
+      data.item == "Net Interest Income" ||
       data.item == "Net Profit (Loss)"||
+      data.item == "Net Fees & Service Income"||
+      data.item == "EBIT"||
       data.item == "Net Profit (Loss) For The Period / Profit (Loss) For The Period From Continuing Operations" ||
+      data.item == "EPS"||
       data.item == "xxx"
       ){
           row.getElement().style.borderBottom = "thin double #888";
@@ -255,7 +297,7 @@ const createTableMain = (tableName: string, data: any): Tabulator => {
   // console.log('lastQuarterList : ', lastQuarterList)
 
   const tableColumns = CreateMainTableColumns(lastQuarterList);
-  console.log('Testing createTableColumns ',tableColumns);
+  // console.log('Testing createTableColumns ',tableColumns);
 
   const plTemplate = GetPlTemplate(data);
 
@@ -274,11 +316,11 @@ const createTableMain = (tableName: string, data: any): Tabulator => {
 
 
   // console.log('Template : ',plTemplate)
-  console.log('Template Edited Replace : ', tableData)
+  // console.log('Template Edited Replace : ', tableData)
 
   const updateValueTableData = UpdateValueMainTableData(data,tableData)
 
-  console.log('updateValueTableData : ', updateValueTableData)
+  // console.log('updateValueTableData : ', updateValueTableData)
 
 
 
@@ -297,12 +339,18 @@ const createTableMain = (tableName: string, data: any): Tabulator => {
     rowFormatter:function(row){
       var rowData = row.getData();
       if(rowData.item == "Total Revenue" ||
-      rowData.item == "Total Cost And Expenses" ||
-      rowData.item == "Net Profit (Loss)"||
       rowData.item == "Net Interest Income"||
-      rowData.item == "Basic Earnings (Loss) Per Share (Baht/Share)"||
+      rowData.item == "Net Fees And Service Income"||
+      rowData.item == "Total Cost And Expenses" ||
+      rowData.item == "Profit (Loss) Before Finance Costs And Income Tax Expense" ||
       rowData.item == "Total Comprehensive Income (Expense) Attributable To : Non-Controlling Interests"||
-      rowData.item == "Net Profit (Loss) For The Period / Profit (Loss) For The Period From Continuing Operations"
+      rowData.item == "Net Profit (Loss) For The Period / Profit (Loss) For The Period From Continuing Operations"||
+      rowData.item == "Profit (Loss) From Operating Before Income Tax Expense"||
+      rowData.item == "Net Profit (Loss)"||
+      rowData.item == "Net Profit (Loss) For The Period"||
+      rowData.item == "Other Comprehensive Income (Expense) - Net Of Tax"||
+      rowData.item == "Total Comprehensive Income (Expense) For The Period"||
+      rowData.item == "Basic Earnings (Loss) Per Share (Baht/Share)"
       ){
           row.getElement().style.borderBottom = "thin double #888";
           row.getElement().style.font = "bold 15px Kanit";
