@@ -711,4 +711,4 @@ graph TD
     G --> H["Calculate Year-Over-Year change and percentage for Net Profit"]
     H --> I["Return enhanced stock object"]
     I --> J["End"]
-``````
+```
