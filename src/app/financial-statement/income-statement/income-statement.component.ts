@@ -8,6 +8,7 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Subject, takeUntil } from 'rxjs';
 import {TabulatorFull as Tabulator} from 'tabulator-tables';
 import { createTableQoQ, createTableMain } from './income-statement-table';
+import * as incomeStatementCard from './income-statement-card';
 import { ThisReceiver } from '@angular/compiler';
 
 
@@ -111,7 +112,6 @@ export class IncomeStatementComponent implements OnInit {
           // ปรับค่า period จาก 'Q/Y' ให้เป็น 'Y Q'
           data.period = this.financialService.ConvertPeriodToYQ(data.period);
 
-
           this.stock = data;
 
           // สร้าง Table QoQ
@@ -122,24 +122,8 @@ export class IncomeStatementComponent implements OnInit {
           const tableMain = '#tableMain';
           createTableMain(tableMain, this.stock);
 
-          // คำนวณ Last Year Q : ex. '2023 Q3' => '2022 Q3'
-          const lastYear: string = this.financialService.SubtractOneYear(this.stock.period)
-
-          this.stock.totalRevenue = this.stock.pl['Total Revenue'][this.stock.period].value
-          this.stock.totalRevenueLastYear = this.stock.pl['Total Revenue'][lastYear].value
-          this.stock.totalRevenusYoY = this.stock.totalRevenue - this.stock.totalRevenueLastYear
-          this.stock.totalRevenusYoYPercent = (this.stock.totalRevenusYoY / Math.abs(this.stock.totalRevenueLastYear)) * 100
-
-
-          this.stock.gp = this.stock.pl['Revenue From Operations'][this.stock.period].value - this.stock.pl['Costs'][this.stock.period].value
-          this.stock.gpLastYear = this.stock.pl['Revenue From Operations'][lastYear].value - this.stock.pl['Costs'][lastYear].value
-          this.stock.gpYoY = this.stock.gp - this.stock.gpLastYear
-          this.stock.gpYoYPercent = (this.stock.gpYoY / Math.abs(this.stock.gpLastYear)) * 100
-
-          this.stock.np = this.stock.pl['Net Profit (Loss) For The Period'][this.stock.period].value
-          this.stock.npLastYear = this.stock.pl['Net Profit (Loss) For The Period'][lastYear].value
-          this.stock.npYoY = this.stock.np - this.stock.npLastYear
-          this.stock.npYoYPercent = (this.stock.npYoY / Math.abs(this.stock.npLastYear)) * 100
+          //incomeStatement-card
+          this.stock = incomeStatementCard.GetFinancialIncomeCard(this.stock);
 
           //สร้าง YoY Array
           //เก็บค่าtotalRevenueYoY q1 - q4 ในปีที่เลือกหุ้น

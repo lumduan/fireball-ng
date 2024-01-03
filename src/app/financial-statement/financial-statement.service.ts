@@ -33,26 +33,26 @@ export class FinancialService {
   }
 
   // FN : คำนวณ Last Year Q : ex. '2023 Q3' => '2022 Q3'
-  SubtractOneYear(input: string): string {
-    // Split the input string into parts using space
-    const parts = input.split(' ');
+  // SubtractOneYear(input: string): string {
+  //   // Split the input string into parts using space
+  //   const parts = input.split(' ');
 
-    if (parts.length === 2) {
-      const year = parseInt(parts[0].trim());
-      const quarter = parts[1].trim();
+  //   if (parts.length === 2) {
+  //     const year = parseInt(parts[0].trim());
+  //     const quarter = parts[1].trim();
 
-      if (!isNaN(year)) {
-        // Subtract one year
-        const newYear = year - 1;
+  //     if (!isNaN(year)) {
+  //       // Subtract one year
+  //       const newYear = year - 1;
 
-        // Format the result as 'YYYY QX'
-        return `${newYear} ${quarter}`;
-      }
-    }
+  //       // Format the result as 'YYYY QX'
+  //       return `${newYear} ${quarter}`;
+  //     }
+  //   }
 
-    // Return the original input if the format is not as expected
-    return input;
-  }
+  //   // Return the original input if the format is not as expected
+  //   return input;
+  // }
 
   /*
    * Function: CreateYoYArray

@@ -367,7 +367,7 @@ const createTableMain = (tableName: string, data: any): Tabulator => {
 
 
 export { createTableQoQ, createTableMain,};
-  function CreateYoYArray(period: any, arg1: number) {
-    throw new Error('Function not implemented.');
-  }
+  // function CreateYoYArray(period: any, arg1: number) {
+  //   throw new Error('Function not implemented.');
+  // }
 
