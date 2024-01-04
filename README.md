@@ -6,32 +6,32 @@ gantt
 
 dateFormat YYYY-MM-DD
 
-section Initial Setup
-Project Initialization :done, 2024-01-01, 5d
-Environment Setup     :active, after des1, 5d
+section Initial
+  Project Initialization :done, 2024-01-01, 5d
+  Environment Setup     :active, after des1, 5d
 
-section Frontend Development (Angular)
-Basic Layout Design   : 2024-01-05, 10d
+section Frontend
+  Basic Layout Design   : 2024-01-05, 10d
   Page-FinancialStatement Dev : 2024-01-05, 10d
-  
-Feature Development   : 2024-01-05, 60d
-UI/UX Enhancements    : 2024-01-05, 60d
+  Feature Development   : 2024-01-05, 60d
+  UI/UX Enhancements    : 2024-01-05, 60d
 
-section Backend Development (Python & MongoDB)
+section Backend
 Database Design       : 2024-01-05, 7d
 API Development       : 2024-01-05, 60d
 Integration Testing   : 2024-01-12, 60d
 
-section Testing & Debugging
+section Testing
 Private Testing : 2024-01-30, 90d
 Unit Testing          : 2024-03-20, 10d
 Functional Testing    : 2024-03-20, 15d
 Bug Fixes             :2024-03-25, 20d
 
-section Deployment & Launch
+section Deployment
 Staging Deployment    : 2024-04-15, 5d
 Production Launch     : 2024-04-20, 5d
 ```
+
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.0.5.
 
