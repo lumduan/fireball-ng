@@ -1,5 +1,37 @@
 # NgFireball (CheckHoon)
 
+## Checkhoon Web App Development Plan
+```mermaid
+gantt
+
+dateFormat YYYY-MM-DD
+excludes weekends
+
+section Initial Setup
+Project Initialization :done, 2024-01-01, 5d
+Environment Setup     :active, after des1, 5d
+
+section Frontend Development (Angular)
+Basic Layout Design   : 2024-01-05, 10d
+Page-FinancialStatement Dev : 2024-01-05, 10d
+Feature Development   : 2024-01-05, 60d
+UI/UX Enhancements    : 2024-01-05, 60d
+
+section Backend Development (Python & MongoDB)
+Database Design       : 2024-01-05, 7d
+API Development       : 2024-01-05, 60d
+Integration Testing   : 2024-01-12, 60d
+
+section Testing & Debugging
+Unit Testing          : 2024-03-20, 10d
+Functional Testing    : 2024-03-20, 15d
+Bug Fixes             :2024-03-25, 20d
+
+section Deployment & Launch
+Staging Deployment    : 2024-04-15, 5d
+Production Launch     : 2024-04-20, 5d
+```
+
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.0.5.
 
 ## Development server
@@ -27,7 +59,7 @@ Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To u
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
 
 
-# Documentation of TypeScript Functions
+# Documentation of Functions
 
 ## Function Definition in `financial-statement.service.ts`
 

@@ -31,8 +31,6 @@ export class IncomeStatementComponent implements OnInit {
 
   private ngUnsubscribe = new Subject();
 
-
-
   stock: any = {};
 
   quarters = ['Q1', 'Q2', 'Q3', 'Q4'];
@@ -122,8 +120,8 @@ export class IncomeStatementComponent implements OnInit {
           const tableMain = '#tableMain';
           createTableMain(tableMain, this.stock);
 
-          //incomeStatement-card
-          this.stock = incomeStatementCard.GetFinancialIncomeCard(this.stock);
+          //สร้าง incomeStatement-card
+          this.stock = incomeStatementCard.GetFinancialIncomeCard(this.stock)
 
           //สร้าง YoY Array
           //เก็บค่าtotalRevenueYoY q1 - q4 ในปีที่เลือกหุ้น
@@ -197,37 +195,37 @@ export class IncomeStatementComponent implements OnInit {
           });
 
 
-          this.chartTotalRevenue = new Chart('chartTotalRevenue', {
-            type: 'bar',
-            data: {
-              labels: this.quarters,
-              datasets: chartTotalRevenueDatasets,
-            },
+          // this.chartTotalRevenue = new Chart('chartTotalRevenue', {
+          //   type: 'bar',
+          //   data: {
+          //     labels: this.quarters,
+          //     datasets: chartTotalRevenueDatasets,
+          //   },
 
-            options: {
-              responsive: false,
-              // maintainAspectRatio: false,
-              plugins: {
-                legend: {
-                  position: 'right',
-                  display: true,
-                },
-                title: {
-                  display: false,
-                  text: 'Total Revenue',
-                },
+          //   options: {
+          //     responsive: false,
+          //     // maintainAspectRatio: false,
+          //     plugins: {
+          //       legend: {
+          //         position: 'right',
+          //         display: true,
+          //       },
+          //       title: {
+          //         display: false,
+          //         text: 'Total Revenue',
+          //       },
 
-                datalabels: {
-                  color: '#36A2EB',
-                  rotation: -90,
-                  formatter: function(value, context) {
-                    return Math.round(value) + ' MB';
-                  },
-                },
+          //       datalabels: {
+          //         color: '#36A2EB',
+          //         rotation: -90,
+          //         formatter: function(value, context) {
+          //           return Math.round(value) + ' MB';
+          //         },
+          //       },
 
-              },
-            },
-          }); // End Chart totalRevenue
+          //     },
+          //   },
+          // }); // End Chart totalRevenue
 
           // Chart GrossProfit
 

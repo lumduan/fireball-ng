@@ -99,23 +99,32 @@ function GetNetProfitYoYPercent(stock:any):any{
 }
 
 
-const GetFinancialIncomeCard = (stock:any):string =>{
-  stock.totalRevenue = GetTotalRevenue(stock);
-  stock.totalRevenueLastYear = GetTotalRevenueLastYear(stock);
-  stock.totalRevenusYoY = GetTotalRevenueYoY(stock);
-  stock.totalRevenusYoYPercent = GetTotalRevenusYoYPercent(stock);
+const GetFinancialIncomeCard = (stock:any) => {
+  if (!stock || typeof stock !== 'object') {
+    throw new Error('Invalid stock object provided');
+  }
 
-  stock.gp = GetGrossProfit(stock);
-  stock.gpLastYear = GetGrossProfitLastYear(stock);
-  stock.gpYoY = GetGrossProfitYoY(stock);
-  stock.gpYoYPercent = GetGrossProfitYoYPercent(stock);
+  try {
+    stock.totalRevenue = GetTotalRevenue(stock);
+    stock.totalRevenueLastYear = GetTotalRevenueLastYear(stock);
+    stock.totalRevenusYoY = GetTotalRevenueYoY(stock);
+    stock.totalRevenusYoYPercent = GetTotalRevenusYoYPercent(stock);
 
-  stock.np = GetNetProfit(stock);
-  stock.npLastYear = GetNetProfitLastYear(stock);
-  stock.npYoY = GetNetProfitYoY(stock);
-  stock.npYoYPercent = GetNetProfitYoYPercent(stock);
+    stock.gp = GetGrossProfit(stock);
+    stock.gpLastYear = GetGrossProfitLastYear(stock);
+    stock.gpYoY = GetGrossProfitYoY(stock);
+    stock.gpYoYPercent = GetGrossProfitYoYPercent(stock);
 
-  return stock
+    stock.np = GetNetProfit(stock);
+    stock.npLastYear = GetNetProfitLastYear(stock);
+    stock.npYoY = GetNetProfitYoY(stock);
+    stock.npYoYPercent = GetNetProfitYoYPercent(stock);
+  } catch (error) {
+    console.error('Error occurred in GetFinancialIncomeCard:', error);
+    throw error; // or handle it as per your application's error handling policy
+  }
+
+  return stock;
 }
 
 export { GetFinancialIncomeCard }
