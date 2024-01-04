@@ -5,7 +5,6 @@
 gantt
 
 dateFormat YYYY-MM-DD
-excludes weekends
 
 section Initial Setup
 Project Initialization :done, 2024-01-01, 5d
@@ -13,7 +12,8 @@ Environment Setup     :active, after des1, 5d
 
 section Frontend Development (Angular)
 Basic Layout Design   : 2024-01-05, 10d
-Page-FinancialStatement Dev : 2024-01-05, 10d
+  Page-FinancialStatement Dev : 2024-01-05, 10d
+  
 Feature Development   : 2024-01-05, 60d
 UI/UX Enhancements    : 2024-01-05, 60d
 
@@ -23,6 +23,7 @@ API Development       : 2024-01-05, 60d
 Integration Testing   : 2024-01-12, 60d
 
 section Testing & Debugging
+Private Testing : 2024-01-30, 90d
 Unit Testing          : 2024-03-20, 10d
 Functional Testing    : 2024-03-20, 15d
 Bug Fixes             :2024-03-25, 20d
