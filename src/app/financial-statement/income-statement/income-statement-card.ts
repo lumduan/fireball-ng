@@ -83,11 +83,11 @@ function GetGrossProfitYoYPercent(stock:any):any{
 
 function GetNetProfit(stock:any):any{
   stock.netProfitItemName = 'Net Profit'
-  return stock.pl['Net Profit (Loss) For The Period'][stock.period].value;
+  return stock.pl['Net Profit (Loss) Attributable To : Owners Of The Parent'][stock.period].value;
 }
 
 function GetNetProfitLastYear(stock:any):any{
-  return stock.pl['Net Profit (Loss) For The Period'][GetLastYear(stock)].value;
+  return stock.pl['Net Profit (Loss) Attributable To : Owners Of The Parent'][GetLastYear(stock)].value;
 }
 
 function GetNetProfitYoY(stock:any):any{

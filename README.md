@@ -1,5 +1,6 @@
 # NgFireball (CheckHoon)
 
+
 ## Checkhoon Web App Development Plan
 ```mermaid
 gantt
@@ -15,24 +16,37 @@ section Frontend
   Page-FinancialStatement Dev : 2024-01-05, 10d
   Feature Development   : 2024-01-05, 60d
   UI/UX Enhancements    : 2024-01-05, 60d
+  Angular Material UI : 2024-01-06,7d
+  SideBar: 2024-01-08, 5d
 
 section Backend
-Database Design       : 2024-01-05, 7d
-API Development       : 2024-01-05, 60d
-Integration Testing   : 2024-01-12, 60d
+  Database Design       : 2024-01-05, 7d
+  API Development       : 2024-01-05, 60d
+  Integration Testing   : 2024-01-12, 60d
 
 section Testing
-Private Testing : 2024-01-30, 90d
-Unit Testing          : 2024-03-20, 10d
-Functional Testing    : 2024-03-20, 15d
-Bug Fixes             :2024-03-25, 20d
+  Private Testing : 2024-01-30, 90d
+  Unit Testing          : 2024-03-20, 10d
+  Functional Testing    : 2024-03-20, 15d
+  Bug Fixes             :2024-03-25, 20d
 
 section Deployment
-Staging Deployment    : 2024-04-15, 5d
-Production Launch     : 2024-04-20, 5d
+  Staging Deployment    : 2024-04-15, 5d
+  Production Launch     : 2024-04-20, 5d
+
 ```
 
+## Task Lists
+```[tasklist]
 
+### 2024-01-04
+- [x] Remove Diff & Increase font size of % change
+- [ ] Switch positions of table and chart
+- [ ] Replace 'Net Profit' > Net Profit (Loss) Attributable To : Owners Of The Parent
+- [ ] Update Chart : Color, Data, etc
+- [ ] Development Plan
+
+```
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.0.5.
 
 ## Development server

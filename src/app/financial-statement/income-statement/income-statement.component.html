@@ -26,12 +26,14 @@
         <p class = "mb-0 text-xs">Last Year:
           {{ stock.totalRevenueLastYear | number:'1.2-2' }} MB.
         </p>
-        <p class = "mb-0 text-xs" >
-          <span [class]="stock.totalRevenusYoY < 0 ? 'text-red-500' : ''">
-            {{ stock.totalRevenusYoY  | number:'1.2-2' }}  MB.
-          </span> :
-          <span [class]= "stock.totalRevenusYoYPercent < 0 ? 'text-red-500' : ''">
-            {{ stock.totalRevenusYoYPercent | number:'1.2-2' }} %
+        <p class = "mb-0 text-xl" >YOY :
+          <span class = "text-green-600">
+            <!-- <span [class]="stock.totalRevenusYoY < 0 ? 'text-red-500' : ''">
+              {{ stock.totalRevenusYoY  | number:'1.2-2' }}  MB.
+            </span> : -->
+            <span [class]= "stock.totalRevenusYoYPercent < 0 ? 'text-red-500' : ''">
+              {{ stock.totalRevenusYoYPercent | number:'1.2-2' }} %
+            </span>
           </span>
         </p>
       </div>
@@ -46,12 +48,14 @@
         <p class = "mb-0 text-xs">Last Year :
           {{ stock.gpLastYear  | number:'1.2-2' }} MB.
         </p>
-        <p class = "mb-0 text-xs" >
-          <span [class]="stock.gpYoY < 0 ? 'text-red-500' : ''">
-            {{ stock.gpYoY   | number:'1.2-2' }} MB.
-          </span> :
-          <span [class]= "stock.gpYoYPercent < 0 ? 'text-red-500' : ''">
-            {{ stock.gpYoYPercent | number:'1.2-2' }} %
+        <p class = "mb-0 text-xl" >YOY :
+          <span class = "text-green-600">
+            <!-- <span [class]="stock.gpYoY < 0 ? 'text-red-500' : ''">
+              {{ stock.gpYoY   | number:'1.2-2' }} MB.
+            </span> : -->
+            <span [class]= "stock.gpYoYPercent < 0 ? 'text-red-500' : ''">
+              {{ stock.gpYoYPercent | number:'1.2-2' }} %
+            </span>
           </span>
         </p>
       </div>
@@ -66,12 +70,14 @@
         <p class = "mb-0 text-xs">Last Year :
           {{ stock.npLastYear | number:'1.2-2' }} MB.
         </p>
-        <p class = "mb-0 text-xs" >
-          <span [class]="stock.npYoY < 0 ? 'text-red-500' : ''">
-            {{ stock.npYoY  | number:'1.2-2' }}  MB.
-          </span> :
-          <span [class]= "stock.npYoYPercent < 0 ? 'text-red-500' : ''">
-            {{ stock.npYoYPercent | number:'1.2-2' }} %
+        <p class = "mb-0 text-xl" >YOY :
+          <span class = "text-green-600">
+            <!-- <span [class]="stock.npYoY < 0 ? 'text-red-500' : ''">
+              {{ stock.npYoY  | number:'1.2-2' }}  MB.
+            </span> : -->
+            <span [class]= "stock.npYoYPercent < 0 ? 'text-red-500' : ''">
+              {{ stock.npYoYPercent | number:'1.2-2' }} %
+            </span>
           </span>
         </p>
       </div>
