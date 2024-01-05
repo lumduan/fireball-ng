@@ -21,6 +21,8 @@ section Frontend
 
 section Backend
   Database Design       : 2024-01-05, 7d
+    MondoDB : 2024-01-03, 3d
+    MariaDB(SQL) : 2024-01-05, 3d
   API Development       : 2024-01-05, 60d
   Integration Testing   : 2024-01-12, 60d
 
@@ -39,17 +41,22 @@ section Deployment
 ## Task Lists
 ```[tasklist]
 
-### 2024-01-04
-- [x] Remove Diff & Increase font size of % change
-- [ ] Switch positions of table and chart
-- [ ] Replace 'Net Profit' > Net Profit (Loss) Attributable To : Owners Of The Parent
-- [ ] Update Chart : Color, Data, etc
-- [ ] Development Plan
+2024-01-05
+  [x] Create Docker Container MariaDB => For SQL to store a list of stocks and stocks that recently IPO.
+
+
+2024-01-04
+  [x] Remove Diff & Increase font size of % change
+  [ ] Switch positions of table and chart
+  [ ] Replace 'Net Profit' > Net Profit (Loss) Attributable To : Owners Of The Parent
+  [ ] Update Chart : Color, Data, etc
+  [ ] Development Plan
 
 ```
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.0.5.
+
 
 ## Development server
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.0.5.
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
 
