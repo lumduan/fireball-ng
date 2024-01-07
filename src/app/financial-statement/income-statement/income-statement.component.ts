@@ -1,15 +1,18 @@
 import { Component, OnInit,OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { StockService } from '../../stock.service';
-import { FinancialService } from '../financial-statement.service';
 import { Chart, controllers, registerables } from 'chart.js/auto';
+import { ThisReceiver } from '@angular/compiler';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Subject, takeUntil } from 'rxjs';
 import {TabulatorFull as Tabulator} from 'tabulator-tables';
-import { createTableQoQ, createTableMain } from './income-statement-table';
-import * as incomeStatementCard from './income-statement-card';
-import { ThisReceiver } from '@angular/compiler';
+import {createTableQoQ, createTableMain } from './income-statement-table';
+import {GetYoYChart} from './income-statement-chart'
+import {GetFinancialIncomeCard} from './income-statement-card';
+import { StockService } from '../../stock.service';
+import { FinancialService } from '../financial-statement.service';
+
+
 
 
 Chart.register(...registerables);
@@ -33,14 +36,6 @@ export class IncomeStatementComponent implements OnInit {
 
   stock: any = {};
 
-  quarters = ['Q1', 'Q2', 'Q3', 'Q4'];
-  yoy: any = {
-    yearsQuarters: {},
-    totalRevenue : {},
-    grossProfit : {},
-    netProfit : {}
-  }
-
   numberPastofYear: number = 5;
 
   // Chart
@@ -60,10 +55,6 @@ export class IncomeStatementComponent implements OnInit {
     this.stockService = stockService;
     this.financialService = financialService;
   }
-
-
-
-
 
 
 
@@ -121,193 +112,17 @@ export class IncomeStatementComponent implements OnInit {
           createTableMain(tableMain, this.stock);
 
           //สร้าง incomeStatement-card
-          this.stock = incomeStatementCard.GetFinancialIncomeCard(this.stock)
+          this.stock = GetFinancialIncomeCard(this.stock)
 
-          //สร้าง YoY Array
-          //เก็บค่าtotalRevenueYoY q1 - q4 ในปีที่เลือกหุ้น
+          this.destroyChart()
+          this.chartTotalRevenue = GetYoYChart(this.stock,'Total Revenue')
+          // this.chartGrossProfit = GetYoYChart(this.stock,'Total Revenue')
+          this.chartNetProfit = GetYoYChart(this.stock,'Net Profit (Loss) Attributable To : Owners Of The Parent')
 
-          this.yoy.totalRevenue = {}
-          this.yoy.grossProfit = {}
-          this.yoy.netProfit = {}
-          this.yoy.yearsQuarters = {}
-
-          // แยก String โดยแยก Year ออกจาก Q ซึ่ง Year จะอยู่ตำแหน่งที่ [0] และ อยู่ตำแหน่งที่[1]
-          const currentYear = this.stock.period.split(' ')[0];
-
-          for (const quarter of this.quarters) {
-            const yearQuarter = this.financialService.CreateYoYArray(`${currentYear} ${quarter}`, this.numberPastofYear);
-
-
-            // Initialize arrays if they don't exist
-            if (!this.yoy.yearsQuarters[quarter.toLowerCase()]) {
-              this.yoy.yearsQuarters[quarter.toLowerCase()] = [];
-            }
-
-            if (!this.yoy.totalRevenue[quarter.toLowerCase()]) {
-              this.yoy.totalRevenue[quarter.toLowerCase()] = [];
-            }
-            if (!this.yoy.grossProfit[quarter.toLowerCase()]) {
-              this.yoy.grossProfit[quarter.toLowerCase()] = [];
-            }
-            if (!this.yoy.netProfit[quarter.toLowerCase()]) {
-              this.yoy.netProfit[quarter.toLowerCase()] = [];
-            }
-
-            this.yoy.yearsQuarters[quarter.toLowerCase()] = yearQuarter;
-
-            for (const yq of yearQuarter) {
-              this.yoy.totalRevenue[quarter.toLowerCase()].push(this.stock.pl['Total Revenue'][`${yq}`].value || 0);
-              this.yoy.grossProfit[quarter.toLowerCase()].push(this.stock.pl['Revenue From Operations'][`${yq}`].value - this.stock.pl['Costs'][`${yq}`].value || 0);
-              this.yoy.netProfit[quarter.toLowerCase()].push(this.stock.pl['Net Profit (Loss) For The Period'][`${yq}`].value || 0);
-            }
-          }
-
-          // console.log('YOY YQ : ',this.yoy) //แสดง array ของ yoy q ที่ต้องการ
-          // console.log('YOY Data : ',this.yoy)
-
-          // PrepareData to Chart
-          const chartTotalRevenueData = this.financialService.CombineYQData(this.yoy.totalRevenue,this.yoy.yearsQuarters);
-          const chartGrossProfitData = this.financialService.CombineYQData(this.yoy.grossProfit,this.yoy.yearsQuarters);
-          const chartNetProfitData = this.financialService.CombineYQData(this.yoy.netProfit,this.yoy.yearsQuarters);
-          // console.log('Data Combile : ',chartTotalRevenueData)
-
-
-          // Chart Area
-          this.destroyChart();
-
-          // Chart totalRevenue
-            // The datasets array is dynamically generated based on the years present in the this.yoy.yearsQuarters["q1"] array.
-            // The map function is used to create a dataset for each year.
-            // The chartData object is constructed with the dynamic dataset
-          const chartTotalRevenueDatasets = this.yoy.yearsQuarters["q1"].map((yearQuarter: string) => {
-            const year = Number(yearQuarter.split(" ")[0]);
-
-            return {
-              label: year.toString(),
-              data: chartTotalRevenueData.map((item: any) => item[year]),
-              datalabels: {
-                color: '#FFCE56'
-              },
-              parsing: {
-                yAxisKey: year.toString()
-              }
-            };
-          });
-
-
-          // this.chartTotalRevenue = new Chart('chartTotalRevenue', {
-          //   type: 'bar',
-          //   data: {
-          //     labels: this.quarters,
-          //     datasets: chartTotalRevenueDatasets,
-          //   },
-
-          //   options: {
-          //     responsive: false,
-          //     // maintainAspectRatio: false,
-          //     plugins: {
-          //       legend: {
-          //         position: 'right',
-          //         display: true,
-          //       },
-          //       title: {
-          //         display: false,
-          //         text: 'Total Revenue',
-          //       },
-
-          //       datalabels: {
-          //         color: '#36A2EB',
-          //         rotation: -90,
-          //         formatter: function(value, context) {
-          //           return Math.round(value) + ' MB';
-          //         },
-          //       },
-
-          //     },
-          //   },
-          // }); // End Chart totalRevenue
-
-          // Chart GrossProfit
-
-          const chartGrossProfitDatasets = this.yoy.yearsQuarters["q1"].map((yearQuarter: string) => {
-            const year = Number(yearQuarter.split(" ")[0]);
-
-            return {
-              label: year.toString(),
-              data: chartGrossProfitData.map((item: any) => item[year]),
-              parsing: {
-                yAxisKey: year.toString()
-              }
-            };
-          });
-
-
-          this.chartGrossProfit = new Chart('chartGrossProfit', {
-            type: 'bar',
-            data: {
-              labels: this.quarters,
-              datasets: chartGrossProfitDatasets,
-            },
-
-            options: {
-              responsive: false,
-              // maintainAspectRatio: false,
-              plugins: {
-                legend: {
-                  position: 'right',
-                  display: true,
-                },
-                title: {
-                  display: false,
-                  text: 'GP',
-                },
-              },
-            },
-          }); // End Chart GrossProfit
-
-          // Chart NetProfit
-          const chartNetProfitDatasets = this.yoy.yearsQuarters["q1"].map((yearQuarter: string) => {
-            const year = Number(yearQuarter.split(" ")[0]);
-
-            return {
-              label: year.toString(),
-              data: chartNetProfitData.map((item: any) => item[year]),
-              parsing: {
-                yAxisKey: year.toString()
-              }
-            };
-          });
-
-
-          this.chartNetProfit = new Chart('chartNetProfit', {
-            type: 'bar',
-            data: {
-              labels: this.quarters,
-              datasets: chartNetProfitDatasets,
-            },
-
-            options: {
-              responsive: false,
-              // maintainAspectRatio: false,
-              plugins: {
-                legend: {
-                  position: 'right',
-                  display: true,
-                },
-                title: {
-                  display: false,
-                  text: 'NP',
-                },
-
-              },
-            },
-          }); // End Chart NetProfit
 
           // Console to result area
           console.log('Data received:', this.stock)
           this.plTemplate = this.stock.fs_templates.pl.income
-          // console.log('FS Templates : ',this.plTemplate)
-          //
 
         },
 

@@ -40,12 +40,17 @@ section Deployment
 
 ## Update Lists
 
+* 2024-01-07
+  * Uodate: Function in financial-statement.service (GetCurrentYear)
+  * Create: Function in income-statement-chart.ts
+    * Increase create chart more efficiently.
+
 * 2024-01-05
-  * Create Docker Container MariaDB => For SQL to store a list of stocks and stocks that recently IPO.
+  * Create: Docker Container MariaDB => For SQL to store a list of stocks and stocks that recently IPO.
 
 
 * 2024-01-04
-  * Remove Diff & Increase font size of % change
+  * Remove: Diff & Increase font size of % change
 
 
 --- 
@@ -137,6 +142,99 @@ graph TD
     I --> J["End"]
 ```
 
+### `GetCurrentYear`
+
+#### Purpose
+Extracts and returns the current year from the stock's financial period information. This function is designed to isolate the year component from the financial period data in the stock object.
+
+#### How It Works
+- The function accesses the `period` property of the stock object.
+- It then splits this `period` string by space (' ') and retrieves the first part, which represents the current year.
+
+#### Parameters
+- `stock`: any - The stock object containing the financial period data in the format "YYYY QX".
+
+#### Returns
+- `string`: The current year extracted from the stock's financial period.
+
+#### Sample Usage and Output
+```typescript
+const stock = { period: '2023 Q3' };
+const currentYear = GetCurrentYear(stock);
+// Output: '2023' (representing the current year extracted from the financial period)
+```
+
+### `CombineYQData`
+
+#### Purpose
+Combines financial data with its corresponding years and quarters into a structured format suitable for charting or data analysis. This function maps quarterly financial values to their respective years and quarters.
+
+#### How It Works
+- Iterates over the keys (quarters) of the `fsValue` object, which holds financial data for different quarters.
+- For each quarter, it creates a data object with the quarter as a key and financial values as values, aligning them with their respective years obtained from `yearsQuarters`.
+- Capitalizes the quarter string for consistent formatting.
+- Extracts the year from each year-quarter combination in `yearsQuarters` and assigns the corresponding financial value from `fsValue` to this year in the data object.
+- Returns an array of these data objects, each representing a quarter with its financial data mapped to the respective years.
+
+#### Parameters
+- `fsValue`: Record<string, number[]> - An object containing arrays of financial values, keyed by quarters.
+- `yearsQuarters`: Record<string, string[]> - An object containing arrays of year-quarter strings, keyed by quarters.
+
+#### Returns
+- `Record<string, any>[]`: An array of objects where each object contains a quarter with financial values mapped to their corresponding years.
+
+#### Sample Usage and Output
+```typescript
+const totalRevenue = {
+  "q1": [138895.71, 145799.98, 133371.87, 199731.15, 222019.79],
+  "q2": [143180.92, 128027.32, 137391.45, 213655.47, 232001.81],
+  // ... other quarters ...
+};
+
+const yearsQuarters = {
+  "q1": ["2019 Q1", "2020 Q1", "2021 Q1", "2022 Q1", "2023 Q1"],
+  "q2": ["2019 Q2", "2020 Q2", "2021 Q2", "2022 Q2", "2023 Q2"],
+  // ... other quarters ...
+};
+
+const chartTotalRevenueData = CombineYQData(totalRevenue, yearsQuarters);
+/* Output: An array of objects with each object representing a quarter and its financial values mapped to corresponding years.
+chartTotalRevenueData = 
+[
+    {
+        "2019": 138895.71,
+        "2020": 145799.98,
+        "2021": 133371.87,
+        "2022": 199731.15,
+        "2023": 222019.79,
+        "x": "Q1"
+    },
+    {
+        "2019": 143180.92,
+        "2020": 128027.31999999998,
+        "2021": 137391.45,
+        "2022": 213655.47,
+        "2023": 232001.80999999997,
+        "x": "Q2"
+    },
+    .....
+*/
+``````
+#### Flowchart
+```mermaid
+graph TD
+    A["Start"] -->|"CombineYQData called"| B["Initialize quarters from fsValue"]
+    B --> C["Iterate over quarters"]
+    C --> D["Capitalize quarter"]
+    D --> E["Create data object for quarter"]
+    E --> F["Iterate over yearsQuarters"]
+    F --> G{"Extract year from yearQuarter"}
+    G --> H["Assign financial value to year in data object"]
+    H --> I["Add data object to result array"]
+    I -->|"Repeat for each quarter"| C
+    C --> J["Return array of data objects"]
+    J --> K["End"]
+``````
 
 ## Function Definition in `income-statement-table.ts`
 
@@ -737,29 +835,235 @@ graph TD
     I --> J["End"]
 ```
 
+## Function Definition in `financial-statement-chart.ts`
 
+### `CreateYoYArrayData`
+
+#### Purpose
+Constructs year-over-year (YoY) array data for a stock, categorizing financial values by quarters over the past several years. This function is designed to prepare data for time-series analysis or charting, focusing on quarterly financial trends.
+
+#### How It Works
+- Initializes arrays for storing years and quarters data (`yearsQuarters`) and the corresponding financial data (`yearQuartersData`) in the stock's chart object.
+- Iterates over a predefined list of quarters (e.g., 'Q1', 'Q2', 'Q3', 'Q4').
+- For each quarter, it uses the `CreateYoYArray` function from the `FinancialService` to generate an array of year-quarter strings, starting from the current year and going back for a specified number of years.
+- Stores this array in `stock.chart.yearsQuarters`.
+- Then, for each year-quarter combination, it fetches the corresponding financial value from the stock's profit and loss data (`pl`) and stores these values in `stock.chart.yearQuartersData`.
+- Returns the enhanced stock object with added year-over-year array data.
+
+#### Parameters
+- `stock`: any - The stock object to be processed, containing financial data and a chart object for storing the results.
+
+#### Returns
+- `any`: The stock object enhanced with year-over-year array data for each quarter.
+
+#### Sample Usage and Output
+```typescript
+const stock = {
+  // ... initial stock data including financial data ...
+};
+
+const updatedStock = CreateYoYArrayData(stock);
+
+// Sample Output for 'yearQuartersData':
+// {
+//   q1: [5769.19, 5645.11, 2599.06, 3453.03, 4122.78],
+//   q2: [4794.61, 2887.03, 2189.69, 3004.02, 4438.40],
+//   q3: [5611.83, 3997.70, 1493.01, 3676.93, 4424.30],
+//   q4: [6167.45, 3572.58, 6703.72, 3137.73, 0]
+// }
+```
+#### Flowchart
+```mermaid
+   graph TD
+    A["Start"] -->|"CreateYoYArrayData called"| B["Initialize yearsQuarters and yearQuartersData arrays"]
+    B --> C["Iterate over quarters"]
+    C -->|"For each quarter"| D["Generate year-quarter strings using CreateYoYArray"]
+    D --> E["Store year-quarters in stock.chart.yearsQuarters"]
+    E --> F["Iterate over year-quarter combinations"]
+    F -->|"For each year-quarter"| G{"Fetch financial value for each year-quarter"}
+    G --> H["Store values in stock.chart.yearQuartersData"]
+    H --> I{"All year-quarters processed for this quarter?"}
+    I -->|"Yes"| J{"All quarters processed?"}
+    I -->|"No"| F
+    J -->|"Yes"| K["Return enhanced stock object"]
+    J -->|"No"| C
+    K --> L["End"]
+```
+### `CreateChartData`
+
+#### Purpose
+Generates chart-ready data for a given stock by combining year-over-year financial data with corresponding years and quarters. This function serves as a pipeline to prepare stock data specifically for charting purposes.
+
+#### How It Works
+- First, the `CreateYoYArrayData` function is called to populate the stock object with year-over-year data arrays (`yearsQuarters` and `yearQuartersData`).
+- Then, the `CombineYQData` function from the `FinancialService` is used to merge these arrays into a format that is suitable for charting. This results in an array of objects, each representing a quarter with financial values mapped to their respective years.
+- The final output is an array of data points, ready to be utilized in financial charts or graphs.
+
+#### Parameters
+- `stock`: any - The stock object containing initial financial data and structures for storing the processed chart data.
+
+#### Returns
+- `any`: An array of objects, each representing a quarter, with financial values mapped to respective years, ready for charting.
+
+#### Sample Usage and Output
+```typescript
+const stock = {
+  // ... initial stock data including financial data ...
+};
+
+const chartData = CreateChartData(stock);
+
+// Sample Output:
+// Assuming the stock contains financial data for multiple quarters over several years,
+// the output will be an array of objects formatted for charting, with each object
+// representing a quarter and its associated financial values for different years.
+```
+
+### `CreateChartDataSets`
+
+#### Purpose
+Generates a collection of data sets, each representing a specific year, from the stock's chart data. These data sets are structured to be directly usable in creating time-series charts, such as line graphs, where each line represents a different year.
+
+#### How It Works
+- The function iterates over the years and quarters data, specifically starting with the quarters for the first year in `stock.chart.yearsQuarters["q1"]`.
+- For each year-quarter combination, it extracts the year and creates a data set:
+  - The `label` is set to the year.
+  - The `data` array consists of financial values corresponding to that year, extracted from `stock.chart.data`.
+  - The `parsing` object defines how the data should be parsed when used in charting libraries.
+- Each data set is configured for chart visualization, with properties for labeling and data points relevant to each specific year.
+
+#### Parameters
+- `stock`: any - The stock object containing prepared chart data in `stock.chart.yearsQuarters` and `stock.chart.data`.
+
+#### Returns
+- `any`: An array of data sets, each representing financial data for a specific year, formatted for use in charts.
+
+#### Sample Usage and Output
+```typescript
+const stock = {
+  // ... initial stock data including prepared chart data ...
+};
+
+const datasets = CreateChartDataSets(stock);
+
+// Sample Output:
+// [
+//   { label: '2019', data: [/* array of values */], parsing: { yAxisKey: '2019' }, borderColor: '...', backgroundColor: '...' },
+//   { label: '2020', data: [/* array of values */], parsing: { yAxisKey: '2020' }, borderColor: '...', backgroundColor: '...' },
+//   // ... datasets for other years ...
+// ]
+```
+#### Flowchart
+```mermaid
+    graph TD
+        A["Start"] -->|"CreateChartDataSets called"| B["Iterate over yearsQuarters['q1']"]
+        B -->|"For each yearQuarter"| C["Extract year from yearQuarter"]
+        C --> D["Create chart data set"]
+        D --> E["Set label to year"]
+        E --> F["Map data from stock.chart.data"]
+        F --> G["Set parsing yAxisKey to year"]
+        G --> H{"All yearQuarters processed?"}
+        H -->|"Yes"| I["Return array of chart data sets"]
+        H -->|"No"| C
+        I --> J["End"]
+```
+### `CreateYoYChart`
+
+#### Purpose
+Creates a Year-Over-Year (YoY) bar chart for a given stock. This function is designed to generate a chart object using the Chart.js library (or a similar charting library), ready for rendering visual representations of financial data.
+
+#### How It Works
+- Initializes a new chart instance using the stock's chart name.
+- Configures the chart type as a bar chart.
+- Sets the chart data, using predefined quarters as labels and the datasets prepared in the stock's chart object.
+- Defines various options for the chart's appearance and behavior, including:
+  - Responsiveness settings.
+  - Legend configuration, such as position and display.
+  - Title settings.
+  - Data labels formatting and styling, including color, rotation, and a formatter function to customize the data label display.
+
+#### Parameters
+- `stock`: any - The stock object containing the necessary data for chart creation, including `stock.chart.name` and `stock.chart.dataset`.
+
+#### Returns
+- `any`: A Chart.js chart instance, configured and ready to be rendered.
+
+#### Sample Usage and Output
+```typescript
+const stock = {
+  chart: {
+    name: 'Total Revenue',
+    dataset: [
+      // ... array of datasets prepared for each year ...
+    ]
+    // ... other chart properties ...
+  },
+  // ... other stock properties ...
+};
+
+const yoYChart = CreateYoYChart(stock);
+
+// Output:
+// A Chart.js chart instance representing a bar chart of the stock's Total Revenue YoY,
+// with datasets for each year and quarters as labels.
+```
+
+### `GetYoYChart`
+
+#### Purpose
+Generates a Year-Over-Year (YoY) chart for a given stock and specified chart name. This function serves as a comprehensive pipeline to create a complete chart object, from data preparation to chart instantiation.
+
+#### How It Works
+- Validates the provided stock object to ensure it is valid and of the correct type.
+- Initializes an empty array for the stock's chart data.
+- Sets the chart name according to the provided `chartName` argument.
+- Calls `CreateChartData` to prepare the chart data based on the stock's financial information.
+- Calls `CreateChartDataSets` to generate the datasets needed for the chart, each representing a specific year.
+- Logs the prepared stock data to the console for debugging or informational purposes.
+- Finally, calls `CreateYoYChart` to create and return the actual chart object using the prepared data.
+
+#### Parameters
+- `stock`: any - The stock object containing financial data to be visualized.
+- `chartName`: string - The name to be assigned to the chart, typically representing the financial metric being visualized.
+
+#### Returns
+- `any`: A Chart.js chart instance (or a similar chart instance), ready to be rendered.
+
+#### Sample Usage and Output
+```typescript
+const stock = {
+  // ... stock object with necessary financial data ...
+};
+
+const chartName = 'Total Revenue';
+const yoYChart = GetYoYChart(stock, chartName);
+
+// Output:
+// A complete Chart.js chart instance for the 'Total Revenue' YoY visualization of the provided stock,
+// with all data and configurations set up.
+```
 
 ## Development server
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.0.5.
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
 
-## Code scaffolding
+### Code scaffolding
 
 Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
 
-## Build
+### Build
 
 Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
 
-## Running unit tests
+### Running unit tests
 
 Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
 
-## Running end-to-end tests
+### Running end-to-end tests
 
 Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
 
-## Further help
+### Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
