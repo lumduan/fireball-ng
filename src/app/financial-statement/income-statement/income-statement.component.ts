@@ -7,7 +7,7 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Subject, takeUntil } from 'rxjs';
 import {TabulatorFull as Tabulator} from 'tabulator-tables';
 import {createTableQoQ, createTableMain } from './income-statement-table';
-import {GetYoYChart} from './income-statement-chart'
+import {GetChartIncome, GetChartGP, GetChartNP } from './income-statement-chart'
 import {GetFinancialIncomeCard} from './income-statement-card';
 import { StockService } from '../../stock.service';
 import { FinancialService } from '../financial-statement.service';
@@ -115,10 +115,9 @@ export class IncomeStatementComponent implements OnInit {
           this.stock = GetFinancialIncomeCard(this.stock)
 
           this.destroyChart()
-          this.chartTotalRevenue = GetYoYChart(this.stock,'Total Revenue')
-          // this.chartGrossProfit = GetYoYChart(this.stock,'Total Revenue')
-          this.chartNetProfit = GetYoYChart(this.stock,'Net Profit (Loss) Attributable To : Owners Of The Parent')
-
+          this.chartTotalRevenue = GetChartIncome(this.stock)
+          this.chartGrossProfit = GetChartGP(this.stock)
+          this.chartNetProfit = GetChartNP(this.stock)
 
           // Console to result area
           console.log('Data received:', this.stock)
