@@ -7,12 +7,11 @@ import ChartDataLabels from 'chartjs-plugin-datalabels';
 import { Subject, takeUntil } from 'rxjs';
 import {TabulatorFull as Tabulator} from 'tabulator-tables';
 import {createTableQoQ, createTableMain } from './income-statement-table';
+import {GetTableIncomeStatement } from './income-statement-table2';
 import {GetChartIncome, GetChartGP, GetChartNP } from './income-statement-chart'
 import {GetFinancialIncomeCard} from './income-statement-card';
 import { StockService } from '../../stock.service';
 import { FinancialService } from '../financial-statement.service';
-
-
 
 
 Chart.register(...registerables);
@@ -114,10 +113,13 @@ export class IncomeStatementComponent implements OnInit {
           //สร้าง incomeStatement-card
           this.stock = GetFinancialIncomeCard(this.stock)
 
+          //สร้าง Chart
           this.destroyChart()
           this.chartTotalRevenue = GetChartIncome(this.stock)
           this.chartGrossProfit = GetChartGP(this.stock)
           this.chartNetProfit = GetChartNP(this.stock)
+
+          GetTableIncomeStatement(this.stock)
 
           // Console to result area
           console.log('Data received:', this.stock)

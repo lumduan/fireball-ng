@@ -14,7 +14,9 @@ section Initial
 section Frontend
   Basic Layout Design   : 2024-01-05, 10d
   Page-FinancialStatement Dev : 2024-01-05, 10d
-  Optimize Chart of FinancialStatement : 2024-01-07, 5d
+  Optimize Chart of FinancialStatement : 2024-01-07, 3d
+  Optimize Table of FinancialStatement : 2024-01-07, 5d
+  
   Feature Development   : 2024-01-05, 60d
   UI/UX Enhancements    : 2024-01-05, 60d
   Angular Material UI : 2024-01-06,7d
@@ -46,6 +48,8 @@ section Deployment
   * Update: Function chart in income-statement-chart.ts
     * Makes it possible to create charges according to the desired item.
     * Can choose the display color of the graph bars.
+    
+  * Update: Function table in income-statement-table.ts
 
 * 2024-01-07
   * Update: Function in financial-statement.service (GetCurrentYear)

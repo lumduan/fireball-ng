@@ -82,62 +82,6 @@ function CreateMainTableColumns(quarters: string[]) {
   return columns;
 }
 
-/**
- * Function: UpdateValueTableData
- * Purpose:
- *   This function is designed to merge financial data from the dataPL object into each item of the tableData array.
- *   It updates each item in tableData with corresponding financial data found in dataPL.pl, keyed by "YYYY QX".
- *
- * How it works:
- *   - The function iterates over each item in the tableData array.
- *   - For each item, it checks for corresponding financial data in dataPL.pl based on the item's name.
- *   - If matching financial data is found, the function merges this data into the tableData item.
- *   - Each key representing a quarter (e.g., "2021 Q1") and its value from dataPL.pl is added to the respective item in tableData.
- *   - The function returns an updated tableData array with merged financial data.
- *
- * Parameters:
- *   - dataPL: An object containing financial data. It should have a structure where dataPL.pl is an object with keys
- *             representing different financial metrics, each containing a sub-object keyed by "YYYY QX".
- *   - tableData: An array of objects, each with at least an 'item' property, representing different financial metrics.
- *
- * Returns:
- *   - An updated array of tableData where each item contains its original properties plus the corresponding financial data.
- *
- * Sample Usage and Output:
- *
- *   /// Sample input dataPL object
- *   const dataPL = {
- *     pl: {
- *       "Revenue From Operations": {
- *         "2021 Q1": { value: 100000 },
- *         "2021 Q2": { value: 110000 }
- *          ... more quarters
- *       },
- *        ... more items
- *     }
- *   };
- *
- *   /// Sample input tableData array
- *   const tableData = [
- *     { id: 1, item: "Revenue From Operations" }
- *     /// ... more items
- *   ];
- *
- *   /// Calling the function
- *   const updatedTableData = UpdateValueTableData(dataPL, tableData);
- *
- *   /// Expected output
- *   /// [
- *   ///   {
- *   ///     id: 1,
- *   ///     item: "Revenue From Operations",
- *   ///     "2021 Q1": 100000,
- *   ///     "2021 Q2": 110000
- *   ///     ... more quarters
- *      },
- *      /// ... more items with their respective updated financial data
- *    ]
- */
 function UpdateValueMainTableData(dataPL: any, tableData: any): any {
   return tableData.map((tableItem: any) => {
     const dataPLItem = dataPL.pl[tableItem.item];
@@ -292,7 +236,7 @@ const createTableMain = (tableName: string, data: any): Tabulator => {
 
   // สร้าง Array ไว้เก็บจำนวนปีเริ่มจาก Year Q ปัจจุบัน ย้อนหลังไปจำนวน x ปี
   const lastQuarterList = financialService.GetLastQuarterList(data.period, 20)
-  // console.log('lastQuarterList : ', lastQuarterList)
+  //  console.log('lastQuarterList : ', lastQuarterList)
 
   const tableColumns = CreateMainTableColumns(lastQuarterList);
   // console.log('Testing createTableColumns ',tableColumns);

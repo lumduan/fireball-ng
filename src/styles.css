@@ -5,6 +5,8 @@
 @import "../node_modules/tailwindcss/components";
 @import "../node_modules/tailwindcss/utilities";
 @import "../node_modules/tabulator-tables/dist/css/tabulator_bulma";
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
+
 
 
 html, body {
@@ -48,3 +50,6 @@ html, body {
   z-index: 1000;
 }
 
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
