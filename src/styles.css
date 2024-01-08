@@ -4,11 +4,7 @@
 @import "../node_modules/tailwindcss/base";
 @import "../node_modules/tailwindcss/components";
 @import "../node_modules/tailwindcss/utilities";
-/* @import "../node_modules/tabulator-tables/dist/css/tabulator_midnight"; */
-/* @import "../node_modules/tabulator-tables/dist/css/tabulator_materialize.min"; */
 @import "../node_modules/tabulator-tables/dist/css/tabulator_bulma";
-/* @import "../node_modules/tabulator-tables/src/scss/themes/tabulator_simple.scss"; */
-
 
 
 html, body {

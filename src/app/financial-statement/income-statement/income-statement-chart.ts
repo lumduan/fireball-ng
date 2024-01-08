@@ -17,7 +17,7 @@ const predefinedColors = [
   'rgba(5, 74, 145, 0.6)',     // Royal Blue (traditional)
   'rgba(67, 127, 151, 0.7)',  // Cerulean
   'rgba(132, 147, 36, 0.7)',  // Olive
-  'rgba(255, 179, 30, 0.7)',  // Selective Yellow
+  'rgba(255, 179, 0, 0.9)',  // Selective Yellow
   'rgba(241, 115, 0, 0.9)'    // Orange
 ];
 
