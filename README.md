@@ -45,10 +45,14 @@ section Deployment
 ## Update Lists
 
 * 2024-01-08
+  * Update: income-statement-table.ts
+    * Prepare data for tables created from Angular Material 
+
+* 2024-01-08
   * Update: Function chart in income-statement-chart.ts
     * Makes it possible to create charges according to the desired item.
     * Can choose the display color of the graph bars.
-    
+
   * Update: Function table in income-statement-table.ts
 
 * 2024-01-07

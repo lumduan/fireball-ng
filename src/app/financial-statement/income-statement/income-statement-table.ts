@@ -83,6 +83,8 @@ function CreateMainTableColumns(quarters: string[]) {
 }
 
 function UpdateValueMainTableData(dataPL: any, tableData: any): any {
+  // console.log('dataPl :', dataPL) // dataPL = stock
+  // console.log('tabledata : ', tableData) // tableData.item
   return tableData.map((tableItem: any) => {
     const dataPLItem = dataPL.pl[tableItem.item];
     if (dataPLItem) {
@@ -91,6 +93,7 @@ function UpdateValueMainTableData(dataPL: any, tableData: any): any {
         tableItem[key] = parseFloat(dataPLItem[key].value).toFixed(2);
       });
     }
+    // console.log('Table Item : ',tableItem)
     return tableItem;
   });
 }
@@ -254,8 +257,9 @@ const createTableMain = (tableName: string, data: any): Tabulator => {
   });
 
   // Replace #ITEM and #HEADER with ""
+  // console.log('TableData : ', tableData)
   tableData = AddPlTableRow(tableData)
-
+  // console.log('TableData : ', tableData)
 
   // console.log('Template : ',plTemplate)
   // console.log('Template Edited Replace : ', tableData)
